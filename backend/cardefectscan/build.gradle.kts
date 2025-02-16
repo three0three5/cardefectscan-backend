@@ -73,6 +73,10 @@ task("cleanGenerated") {
 	delete("${layout.buildDirectory.get()}/generated")
 }
 
+tasks.jar.configure {
+	enabled = false
+}
+
 openApiGenerate {
 	generatorName.set("kotlin-spring")
 	inputSpec.set("$rootDir/src/main/resources/cardefectscan.yaml")
@@ -83,6 +87,8 @@ openApiGenerate {
 		mapOf(
 			"useSpringBoot3" to "true",
 			"interfaceOnly" to "true",
+			"documentationProvider" to "none",
+			"useTags" to "true",
 		)
 	)
 }

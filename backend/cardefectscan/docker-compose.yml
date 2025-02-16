@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8081:8080"
+    environment:
+      SWAGGER_JSON: /swagger.yaml
+    volumes:
+      - ./src/main/resources/cardefectscan.yaml:/swagger.yaml:ro
+#    depends_on:
+#      liquibase:
+#        condition: service_completed_successfully
+#    environment:
+#      - DATABASE_HOST=db:5432
+#      - DATABASE_USERNAME=user
+#      - DATABASE_PASSWORD=password
+#      - DATABASE_NAME=feature_db
+
+
+
+
+#  liquibase:
+#    image: liquibase/liquibase
+#    container_name: liquibase
+#    environment:
+#      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://db:5432/feature_db
+#      - LIQUIBASE_COMMAND_USERNAME=user
+#      - LIQUIBASE_COMMAND_PASSWORD=password
+#      - LIQUIBASE_COMMAND_CHANGELOG_FILE=/changelog/db.changelog-master.xml
+#    volumes:
+#      - ./liquibase/changelog:/liquibase/changelog
+#    depends_on:
+#      - db
+#    entrypoint: ["liquibase", "update"]
+
+#  db:
+#    image: postgres:15
+#    container_name: postgres_db
+#    environment:
+#      POSTGRES_USER: user
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: feature_db
+#    volumes:
+#      - ./db_data:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
