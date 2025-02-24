@@ -10,40 +10,65 @@ services:
       SWAGGER_JSON: /swagger.yaml
     volumes:
       - ./src/main/resources/cardefectscan.yaml:/swagger.yaml:ro
-#    depends_on:
-#      liquibase:
-#        condition: service_completed_successfully
-#    environment:
-#      - DATABASE_HOST=db:5432
-#      - DATABASE_USERNAME=user
-#      - DATABASE_PASSWORD=password
-#      - DATABASE_NAME=feature_db
 
-
-
-
-#  liquibase:
-#    image: liquibase/liquibase
-#    container_name: liquibase
-#    environment:
-#      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://db:5432/feature_db
-#      - LIQUIBASE_COMMAND_USERNAME=user
-#      - LIQUIBASE_COMMAND_PASSWORD=password
-#      - LIQUIBASE_COMMAND_CHANGELOG_FILE=/changelog/db.changelog-master.xml
-#    volumes:
-#      - ./liquibase/changelog:/liquibase/changelog
-#    depends_on:
-#      - db
-#    entrypoint: ["liquibase", "update"]
-
-#  db:
-#    image: postgres:15
-#    container_name: postgres_db
-#    environment:
-#      POSTGRES_USER: user
-#      POSTGRES_PASSWORD: password
-#      POSTGRES_DB: feature_db
-#    volumes:
-#      - ./db_data:/var/lib/postgresql/data
+#  redis:
+#    image: redis
+#    container_name: redis
 #    ports:
-#      - "5432:5432"
+#      - "6379:6379"
+#    volumes:
+#      - ./redis_data:/data
+#    command: >
+#      sh -c '
+#        mkdir -p /usr/local/etc/redis &&
+#        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
+#        echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
+#        echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
+#        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
+#        echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
+#        echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl &&
+#        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
+#      '
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    restart: unless-stopped
+#    environment:
+#      - REDIS_PASSWORD=${REDIS_PASSWORD}
+#      - REDIS_USER=${REDIS_USER}
+#      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+
+  liquibase:
+    image: liquibase/liquibase
+    container_name: liquibase
+    environment:
+      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://db:5432/cardefectscan
+      - LIQUIBASE_COMMAND_USERNAME=${POSTGRES_USER}
+      - LIQUIBASE_COMMAND_PASSWORD=${POSTGRES_PASSWORD}
+      - LIQUIBASE_COMMAND_CHANGELOG_FILE=/changelog/db.changelog-master.xml
+    volumes:
+      - ./liquibase/changelog:/liquibase/changelog:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["liquibase", "update"]
+
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: cardefectscan
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "cardefectscan"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s

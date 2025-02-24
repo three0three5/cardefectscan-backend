@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS _user;
+DROP TABLE IF EXISTS refresh_session;

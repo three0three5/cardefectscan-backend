@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class CardefectscanApplication
 
 fun main(args: Array<String>) {
-	runApplication<CardefectscanApplication>(*args)
+    runApplication<CardefectscanApplication>(*args)
 }

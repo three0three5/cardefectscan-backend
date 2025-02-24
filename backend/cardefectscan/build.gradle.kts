@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.run.BootRun
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
@@ -22,9 +24,17 @@ repositories {
 	maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
+sourceSets {
+	main {
+		kotlin {
+			srcDir("${layout.buildDirectory.get()}/generated/src")
+		}
+	}
+}
+
 dependencies {
 //	implementation("org.springframework.boot:spring-boot-starter-amqp")
-//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 //	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -37,11 +47,14 @@ dependencies {
 	implementation("org.openapitools:openapi-generator:7.11.0") {
 		exclude(group = "org.slf4j", module = "slf4j-simple")
 	}
-//	runtimeOnly("org.postgresql:postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	runtimeOnly("org.postgresql:postgresql")
+
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 //	testImplementation("org.springframework.amqp:spring-rabbit-test")
 //	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.testcontainers:postgresql:1.20.0")
+	testImplementation("com.redis:testcontainers-redis:2.2.3")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -57,15 +70,13 @@ allOpen {
 	annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
-}
+tasks {
+	withType<Test> {
+		useJUnitPlatform()
+	}
 
-sourceSets {
-	main {
-		kotlin {
-			srcDir("${layout.buildDirectory.get()}/generated/src")
-		}
+	jar.configure {
+		enabled = false
 	}
 }
 
@@ -73,9 +84,17 @@ task("cleanGenerated") {
 	delete("${layout.buildDirectory.get()}/generated")
 }
 
-tasks.jar.configure {
-	enabled = false
+tasks.register("bootRunLocal") {
+	group = "application"
+	description = "Runs this project as a Spring Boot application with the dev profile"
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "local")
+		}
+	}
+	finalizedBy("bootRun")
 }
+
 
 openApiGenerate {
 	generatorName.set("kotlin-spring")
@@ -97,7 +116,6 @@ project.afterEvaluate {
 	tasks.named("openApiGenerate").configure {
 		dependsOn("cleanGenerated")
 	}
-
 	tasks.named("compileKotlin").configure {
 		dependsOn("openApiGenerate")
 	}
