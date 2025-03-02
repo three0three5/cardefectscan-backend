@@ -1,4 +1,4 @@
-package ru.hse.cardefectscan.service
+package ru.hse.cardefectscan.service.auth
 
 import mu.KLogging
 import org.openapi.cardefectscan.model.LoginRequest

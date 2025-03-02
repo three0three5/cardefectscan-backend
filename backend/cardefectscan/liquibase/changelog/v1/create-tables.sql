@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS refresh_session (
     "refresh_token" uuid NOT NULL UNIQUE,
     "user_agent" CHARACTER VARYING(200) NOT NULL,
     "fingerprint" CHARACTER VARYING(200) NOT NULL,
-    "ip" CHARACTER VARYING(15) NOT NULL,
     "expires_in" BIGINT NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT now()
 );

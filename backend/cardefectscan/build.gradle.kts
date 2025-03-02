@@ -1,8 +1,7 @@
-import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-	kotlin("jvm") version "1.9.25"
-	kotlin("plugin.spring") version "1.9.25"
+	kotlin("jvm") version "2.1.0"
+	kotlin("plugin.spring") version "2.1.0"
 	id("org.springframework.boot") version "3.5.0-SNAPSHOT"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
@@ -36,10 +35,14 @@ dependencies {
 //	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-//	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	// https://mvnrepository.com/artifact/com.auth0/java-jwt
+	implementation("com.auth0:java-jwt:4.5.0")
+	// https://mvnrepository.com/artifact/org.springframework/spring-webflux
+	implementation("org.springframework:spring-webflux:7.0.0-M2")
 
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -51,7 +54,7 @@ dependencies {
 
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 //	testImplementation("org.springframework.amqp:spring-rabbit-test")
-//	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.testcontainers:postgresql:1.20.0")
 	testImplementation("com.redis:testcontainers-redis:2.2.3")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,4 +1,4 @@
-package ru.hse.cardefectscan.service
+package ru.hse.cardefectscan.service.auth
 
 import org.springframework.stereotype.Service
 
