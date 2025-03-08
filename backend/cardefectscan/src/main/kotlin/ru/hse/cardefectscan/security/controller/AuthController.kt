@@ -1,4 +1,4 @@
-package ru.hse.cardefectscan.controller
+package ru.hse.cardefectscan.security.controller
 
 import org.openapi.cardefectscan.api.AuthApi
 import org.openapi.cardefectscan.model.LoginRequest
@@ -6,7 +6,7 @@ import org.openapi.cardefectscan.model.SignupRequest
 import org.openapi.cardefectscan.model.TokenResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import ru.hse.cardefectscan.service.auth.AuthService
+import ru.hse.cardefectscan.security.service.AuthService
 
 @RestController
 class AuthController(

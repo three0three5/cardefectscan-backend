@@ -2,7 +2,7 @@ package ru.hse.cardefectscan.configuration
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
-import ru.hse.cardefectscan.properties.AuthProperties
+import ru.hse.cardefectscan.security.properties.AuthProperties
 
 @Configuration
 @EnableConfigurationProperties(AuthProperties::class)

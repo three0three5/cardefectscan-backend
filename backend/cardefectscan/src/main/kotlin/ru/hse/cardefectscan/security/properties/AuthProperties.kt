@@ -1,4 +1,4 @@
-package ru.hse.cardefectscan.properties
+package ru.hse.cardefectscan.security.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.bind.ConstructorBinding
@@ -7,4 +7,5 @@ import org.springframework.boot.context.properties.bind.ConstructorBinding
 data class AuthProperties @ConstructorBinding constructor(
     val refreshLifespan: Long,
     val jwtLifespan: Long,
+    val privateKey: String,
 )

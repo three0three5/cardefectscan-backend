@@ -36,3 +36,4 @@ management:
 auth:
   refresh-lifespan: ${REFRESH_LIFESPAN:604800}
   jwt-lifespan: ${JWT_LIFESPAN:120}
+  private-key: ${JWT_PRIVATE_KEY}
