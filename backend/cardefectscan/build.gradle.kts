@@ -35,12 +35,9 @@ dependencies {
 //	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation("com.auth0:java-jwt:4.5.0")
 	// https://mvnrepository.com/artifact/org.springframework/spring-webflux
 	implementation("org.springframework:spring-webflux:7.0.0-M2")
 
@@ -51,6 +48,8 @@ dependencies {
 		exclude(group = "org.slf4j", module = "slf4j-simple")
 	}
 	runtimeOnly("org.postgresql:postgresql")
+
+	implementation(project(":jwt-starter"))
 
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 //	testImplementation("org.springframework.amqp:spring-rabbit-test")

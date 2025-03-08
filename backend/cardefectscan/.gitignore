@@ -43,3 +43,6 @@ out/
 ### Docker volumes ###
 /db_data
 /redis_data
+
+### Submodules ###
+/jwt-starter/build

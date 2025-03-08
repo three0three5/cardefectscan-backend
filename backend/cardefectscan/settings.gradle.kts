@@ -6,3 +6,4 @@ pluginManagement {
 	}
 }
 rootProject.name = "cardefectscan"
+include("jwt-starter")
