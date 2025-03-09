@@ -7,4 +7,8 @@ class CookieService {
     fun addRefresh(refresh: String) {
         // TODO
     }
+
+    fun retrieveRefresh(): String? {
+        TODO()
+    }
 }

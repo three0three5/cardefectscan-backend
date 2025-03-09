@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 import ru.hse.cardefectscan.entity.UserEntity
 
 interface UserRepository : JpaRepository<UserEntity, Long> {
-    fun findByUsername(username: String): UserEntity?
+    fun findByLogin(login: String): UserEntity?
 }

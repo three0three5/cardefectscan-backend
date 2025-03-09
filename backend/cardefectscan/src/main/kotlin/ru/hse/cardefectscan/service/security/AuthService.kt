@@ -29,11 +29,12 @@ class AuthService(
     }
 
     fun refresh(): TokenResponse {
-        return tokenService.refresh()
+        return tokenService.refreshSession()
     }
 
     fun login(loginRequest: LoginRequest): TokenResponse {
-        val user = userRepository.findByUsername(loginRequest.username)
+        logger.info { "login request from: ${loginRequest.username}" }
+        val user = userRepository.findByLogin(loginRequest.username)
             ?: throw LoginOrPasswordIncorrectException()
         if (!passwordEncoder.matches(user.hashedPassword, loginRequest.password))
             throw LoginOrPasswordIncorrectException()

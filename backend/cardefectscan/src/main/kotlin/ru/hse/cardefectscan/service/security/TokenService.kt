@@ -1,13 +1,16 @@
 package ru.hse.cardefectscan.service.security
 
+import mu.KLogging
 import org.openapi.cardefectscan.model.TokenResponse
 import org.springframework.stereotype.Service
 import ru.hse.cardefectscan.entity.RefreshTokenEntity
 import ru.hse.cardefectscan.entity.UserEntity
+import ru.hse.cardefectscan.exception.SessionNotFoundException
 import ru.hse.cardefectscan.properties.AuthProperties
 import ru.hse.cardefectscan.repository.RefreshTokenRepository
 import ru.hse.jwtstarter.jwt.model.Role
 import ru.hse.jwtstarter.jwt.service.JwtService
+import java.util.UUID
 
 @Service
 class TokenService(
@@ -30,11 +33,29 @@ class TokenService(
         return TokenResponse(jwt)
     }
 
-    fun refresh(): TokenResponse {
-        TODO()
+    fun refreshSession(): TokenResponse {
+        val refresh = cookieService.retrieveRefresh() ?: throw SessionNotFoundException()
+        val token = refreshTokenRepository.findByRefreshToken(UUID.fromString(refresh))
+            ?: throw SessionNotFoundException()
+        val newToken = RefreshTokenEntity(
+            user = token.user,
+            userAgent = clientDataService.userAgent(),
+            fingerprint = clientDataService.fingerprint(),
+            expiresIn = authProperties.refreshLifespan,
+        )
+        refreshTokenRepository.delete(token)
+        refreshTokenRepository.save(newToken)
+        val jwt = jwtService.createJwt(token.user.id!!, listOf(Role.ROLE_USER.name))
+        cookieService.addRefresh(newToken.refreshToken.toString())
+        return TokenResponse(jwt)
     }
 
     fun clearSessions() {
-        TODO("Not yet implemented")
+        val refresh = cookieService.retrieveRefresh() ?: return
+        val token = refreshTokenRepository.findByRefreshToken(UUID.fromString(refresh)) ?: return
+        val tokens = token.user.refreshTokens
+        refreshTokenRepository.deleteAllInBatch(tokens)
     }
+
+    companion object : KLogging()
 }
