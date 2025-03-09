@@ -99,7 +99,7 @@ paths:
       summary: Logout user
       description: Revokes refresh token and clears cookies
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: [ ]
       responses:
         "200":
           description: Logout successful, cookies cleared

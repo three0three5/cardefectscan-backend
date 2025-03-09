@@ -17,15 +17,16 @@ spring:
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-  #  data:
-  #    redis:
-  #      host: ${REDIS_HOST:localhost}
-  #      port: ${REDIS_PORT:6379}
   mustache:
     check-template-location: false
 
   main:
     web-application-type: servlet
+
+  security:
+    user:
+      name: disabled
+      password: disabled
 
 management:
   endpoint:
@@ -42,3 +43,10 @@ auth:
     is-http-only: true
     max-age: 604800
     is-secure: true
+
+minio:
+  endpoint: http://minio:9000
+  access-key: ${MINIO_ROOT_USER}
+  secret-key: ${MINIO_ROOT_PASSWORD}
+  bucket: images
+  expiration: 604800

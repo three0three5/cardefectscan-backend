@@ -33,12 +33,15 @@ sourceSets {
 dependencies {
 //	implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//	implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation("org.springframework:spring-webflux:7.0.0-M2")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+
+    implementation("io.minio:minio:8.5.17")
+    implementation("net.coobird:thumbnailator:0.4.20")
 
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
