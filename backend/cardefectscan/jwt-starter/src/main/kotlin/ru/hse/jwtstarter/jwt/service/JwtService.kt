@@ -7,27 +7,27 @@ import com.auth0.jwt.interfaces.DecodedJWT
 import org.springframework.stereotype.Service
 import ru.hse.jwtstarter.jwt.model.JwtClaims
 import ru.hse.jwtstarter.jwt.model.Role
-import ru.hse.jwtstarter.jwt.properties.AuthProperties
+import ru.hse.jwtstarter.jwt.properties.JwtProperties
 import java.time.Instant
 
 
 @Service
 class JwtService(
-    private val authProperties: AuthProperties,
+    private val jwtProperties: JwtProperties,
 ) {
-    fun createJwt(userid: Int, roles: List<String?>?): String {
-        val algorithm: Algorithm = Algorithm.HMAC512(authProperties.privateKey)
+    fun createJwt(userid: Long, roles: List<String?>?): String {
+        val algorithm: Algorithm = Algorithm.HMAC512(jwtProperties.privateKey)
         return JWT.create()
             .withIssuer(ISSUER)
             .withIssuedAt(Instant.now())
             .withClaim(USER_ID_CLAIM, userid)
             .withClaim(ROLES_CLAIM, roles)
-            .withExpiresAt(Instant.now().plusSeconds(authProperties.jwtLifespan))
+            .withExpiresAt(Instant.now().plusSeconds(jwtProperties.lifespan))
             .sign(algorithm)
     }
 
     fun verify(token: String?): DecodedJWT {
-        val algorithm: Algorithm = Algorithm.HMAC512(authProperties.privateKey)
+        val algorithm: Algorithm = Algorithm.HMAC512(jwtProperties.privateKey)
         val verifier: JWTVerifier = JWT
             .require(algorithm)
             .withIssuer(ISSUER)

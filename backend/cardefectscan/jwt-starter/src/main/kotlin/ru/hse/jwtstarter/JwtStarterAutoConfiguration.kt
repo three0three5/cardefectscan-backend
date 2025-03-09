@@ -11,12 +11,12 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.RequestMatcher
 import ru.hse.jwtstarter.jwt.filter.JwtAuthenticationFilter
 import ru.hse.jwtstarter.jwt.matcher.JwtRequestMatcher
-import ru.hse.jwtstarter.jwt.properties.AuthProperties
+import ru.hse.jwtstarter.jwt.properties.JwtProperties
 import ru.hse.jwtstarter.jwt.provider.JwtAuthenticationProvider
 import ru.hse.jwtstarter.jwt.service.JwtService
 
 @Configuration
-@EnableConfigurationProperties(AuthProperties::class)
+@EnableConfigurationProperties(JwtProperties::class)
 class JwtStarterAutoConfiguration {
     @Bean
     fun jwtFilter(
@@ -45,6 +45,6 @@ class JwtStarterAutoConfiguration {
 
     @Bean
     fun jwtService(
-        authProperties: AuthProperties
-    ) = JwtService(authProperties)
+        jwtProperties: JwtProperties
+    ) = JwtService(jwtProperties)
 }

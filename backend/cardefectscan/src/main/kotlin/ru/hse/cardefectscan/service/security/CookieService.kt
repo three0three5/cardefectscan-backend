@@ -4,4 +4,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CookieService {
+    fun addRefresh(refresh: String) {
+        // TODO
+    }
 }
