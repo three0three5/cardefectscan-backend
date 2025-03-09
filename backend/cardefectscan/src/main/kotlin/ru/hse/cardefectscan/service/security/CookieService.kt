@@ -4,11 +4,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class CookieService {
-    fun addRefresh(refresh: String) {
-        // TODO
+    private val refreshTokenHolder = ThreadLocal<String?>()
+
+    fun setRefresh(refresh: String) {
+        refreshTokenHolder.set(refresh)
     }
 
     fun retrieveRefresh(): String? {
-        TODO()
+        return refreshTokenHolder.get()
+    }
+
+    fun clear() {
+        refreshTokenHolder.remove()
     }
 }

@@ -38,3 +38,7 @@ auth:
   jwt:
     lifespan: ${JWT_LIFESPAN:120}
     private-key: ${JWT_PRIVATE_KEY}
+  cookies:
+    is-http-only: true
+    max-age: 604800
+    is-secure: true

@@ -10,10 +10,11 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import ru.hse.cardefectscan.properties.AuthProperties
+import ru.hse.cardefectscan.properties.CookieProperties
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(AuthProperties::class)
+@EnableConfigurationProperties(AuthProperties::class, CookieProperties::class)
 class SecurityConfiguration {
     @Bean
     fun securityWebFilterChain(

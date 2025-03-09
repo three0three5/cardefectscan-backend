@@ -29,7 +29,7 @@ class TokenService(
         )
         val jwt = jwtService.createJwt(user.id!!, listOf(Role.ROLE_USER.name))
         refreshTokenRepository.save(refresh)
-        cookieService.addRefresh(refresh.refreshToken.toString())
+        cookieService.setRefresh(refresh.refreshToken.toString())
         return TokenResponse(jwt)
     }
 
@@ -46,7 +46,7 @@ class TokenService(
         refreshTokenRepository.delete(token)
         refreshTokenRepository.save(newToken)
         val jwt = jwtService.createJwt(token.user.id!!, listOf(Role.ROLE_USER.name))
-        cookieService.addRefresh(newToken.refreshToken.toString())
+        cookieService.setRefresh(newToken.refreshToken.toString())
         return TokenResponse(jwt)
     }
 
