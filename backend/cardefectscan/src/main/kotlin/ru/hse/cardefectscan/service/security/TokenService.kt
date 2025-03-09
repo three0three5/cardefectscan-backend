@@ -17,7 +17,7 @@ class TokenService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val cookieService: CookieService,
 ) {
-    fun createAndPersist(user: UserEntity): TokenResponse {
+    fun createAndPersistSession(user: UserEntity): TokenResponse {
         val refresh = RefreshTokenEntity(
             user = user,
             userAgent = clientDataService.userAgent(),
@@ -28,5 +28,13 @@ class TokenService(
         refreshTokenRepository.save(refresh)
         cookieService.addRefresh(refresh.refreshToken.toString())
         return TokenResponse(jwt)
+    }
+
+    fun refresh(): TokenResponse {
+        TODO()
+    }
+
+    fun clearSessions() {
+        TODO("Not yet implemented")
     }
 }

@@ -8,15 +8,16 @@ import org.openapi.cardefectscan.model.TokenResponse
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import ru.hse.cardefectscan.entity.UserEntity
+import ru.hse.cardefectscan.exception.LoginOrPasswordIncorrectException
 import ru.hse.cardefectscan.repository.UserRepository
 
 @Service
+@Transactional
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val tokenService: TokenService,
 ) {
-    @Transactional
     fun signUp(signupRequest: SignupRequest): TokenResponse {
         logger.info { "signup request from: ${signupRequest.username}" }
         val user = UserEntity(
@@ -24,19 +25,23 @@ class AuthService(
             passwordEncoder.encode(signupRequest.password),
         )
         userRepository.save(user)
-        return tokenService.createAndPersist(user)
+        return tokenService.createAndPersistSession(user)
     }
 
     fun refresh(): TokenResponse {
-        TODO("Not yet implemented")
+        return tokenService.refresh()
     }
 
     fun login(loginRequest: LoginRequest): TokenResponse {
-        TODO("Not yet implemented")
+        val user = userRepository.findByUsername(loginRequest.username)
+            ?: throw LoginOrPasswordIncorrectException()
+        if (!passwordEncoder.matches(user.hashedPassword, loginRequest.password))
+            throw LoginOrPasswordIncorrectException()
+        return tokenService.createAndPersistSession(user)
     }
 
     fun logout() {
-        TODO("Not yet implemented")
+        tokenService.clearSessions()
     }
 
     companion object : KLogging()

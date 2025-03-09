@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test
 
 class CardefectscanApplicationTests : AbstractIntegrationTest() {
 
-	@Test
-	fun contextLoads() {
-	}
+    @Test
+    fun contextLoads() {
+    }
 
 }
