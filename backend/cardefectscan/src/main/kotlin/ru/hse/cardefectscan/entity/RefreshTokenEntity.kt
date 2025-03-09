@@ -23,11 +23,8 @@ class RefreshTokenEntity(
     @Column(name = "refresh_token", unique = true, nullable = false)
     val refreshToken: UUID = UUID.randomUUID(),
 
-    @Column(name = "user_agent", nullable = false)
-    val userAgent: String,
-
-    @Column(name = "fingerprint", nullable = false)
-    val fingerprint: String,
+    @Column(name = "fingerprint", nullable = true)
+    val fingerprint: String?,
 
     @Column(name = "expires_in", nullable = false)
     val expiresIn: Long,

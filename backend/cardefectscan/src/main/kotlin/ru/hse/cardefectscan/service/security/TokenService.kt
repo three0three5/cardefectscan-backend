@@ -23,7 +23,6 @@ class TokenService(
     fun createAndPersistSession(user: UserEntity): TokenResponse {
         val refresh = RefreshTokenEntity(
             user = user,
-            userAgent = clientDataService.userAgent(),
             fingerprint = clientDataService.fingerprint(),
             expiresIn = authProperties.refreshLifespan,
         )
@@ -39,7 +38,6 @@ class TokenService(
             ?: throw SessionNotFoundException()
         val newToken = RefreshTokenEntity(
             user = token.user,
-            userAgent = clientDataService.userAgent(),
             fingerprint = clientDataService.fingerprint(),
             expiresIn = authProperties.refreshLifespan,
         )
