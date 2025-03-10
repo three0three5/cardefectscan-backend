@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.hse.cardefectscan.exception.BusinessException
 import ru.hse.cardefectscan.exception.LoginOrPasswordIncorrectException
 import ru.hse.cardefectscan.exception.SessionNotFoundException
+import ru.hse.cardefectscan.exception.UserExistsException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -34,6 +35,16 @@ class GlobalExceptionHandler {
         val problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST).apply {
             title = HttpStatus.BAD_REQUEST.reasonPhrase
             detail = ex.message ?: "Business error occurred"
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
+    }
+
+
+    @ExceptionHandler(UserExistsException::class)
+    fun handleSQLException(ex: UserExistsException): ResponseEntity<ProblemDetail> {
+        val problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST).apply {
+            title = HttpStatus.BAD_REQUEST.reasonPhrase
+            detail = ex.message ?: "User with this login already exists"
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }

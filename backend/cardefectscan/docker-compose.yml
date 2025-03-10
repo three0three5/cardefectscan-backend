@@ -53,22 +53,42 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_NOTIFY_AMQP_ENABLE: "on"
+      MINIO_NOTIFY_AMQP_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+      MINIO_NOTIFY_AMQP_EXCHANGE: "minio-events"
+      MINIO_NOTIFY_AMQP_ROUTING_KEY: "minio.notification"
     volumes:
       - ./minio_data:/data
     command: server --console-address ":9001" /data
     restart: unless-stopped
 
-  # Создание бакета после запуска MinIO
-  minio-create-bucket:
+  mc:
     image: minio/mc
-    container_name: minio-create-bucket
+    container_name: mc
     depends_on:
       - minio
+      - rabbitmq
     entrypoint: >
-      /bin/sh -c "
-      sleep 5;
-      mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-      mc mb --ignore-existing local/${MINIO_BUCKET_NAME};
-      mc policy set public local/${MINIO_BUCKET_NAME};
-      exit 0;
+      sh -c "
+      until mc alias set local http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD; do
+        echo 'Waiting for MinIO...';
+        sleep 3;
+      done;
+      mc mb --ignore-existing local/$MINIO_BUCKET_NAME;
+      mc event add local/$MINIO_BUCKET_NAME arn:minio:sqs::rabbitmq:minio-events --event put;
+      echo 'MinIO notifications configured';
       "
+
+  rabbitmq:
+    image: rabbitmq:4.0.7-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # UI
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped

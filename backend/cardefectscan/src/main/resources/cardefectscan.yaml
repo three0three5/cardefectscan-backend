@@ -11,10 +11,24 @@ tags:
     description: Operations with user account
   - name: Images
     description: Operations with images
-  - name: Generations
+  - name: Requests
     description: Operations with processed (or currently being in process) images
 
 paths:
+  /api/v1/images/load:
+    get:
+      tags:
+        - Images
+      summary: Presigned URL
+      description: Get presigned URL for image loading
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageLink'
+
   /api/v1/auth/signup:
     post:
       tags:
@@ -123,6 +137,14 @@ components:
       name: refresh_token
 
   schemas:
+    ImageLink:
+      type: object
+      required:
+        - link
+      properties:
+        link:
+          type: string
+
     SignupRequest:
       type: object
       required:

@@ -14,3 +14,10 @@ CREATE TABLE IF NOT EXISTS refresh_session
     "expires_in"    BIGINT                                         NOT NULL,
     "created_at"    TIMESTAMP                                      NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS image_request
+(
+    "image_name" VARCHAR(256) PRIMARY KEY,
+    "user_id" BIGINT REFERENCES _user (id) ON DELETE CASCADE NOT NULL,
+    "status" VARCHAR(20) NOT NULL
+);
