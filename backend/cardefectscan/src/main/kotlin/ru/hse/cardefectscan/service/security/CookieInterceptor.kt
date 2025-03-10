@@ -1,6 +1,5 @@
 package ru.hse.cardefectscan.service.security
 
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KLogging
@@ -32,18 +31,6 @@ class CookieInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        val newRefreshToken = cookieService.retrieveRefresh()
-        if (newRefreshToken != null) {
-            val cookie = Cookie("refresh_token", newRefreshToken).apply {
-                isHttpOnly = cookieProperties.isHttpOnly
-                secure = cookieProperties.isSecure
-                path = "/"
-                maxAge = cookieProperties.maxAge
-                domain = cookieProperties.domain
-            }
-            response.addCookie(cookie)
-            logger.info("Set new refresh token in cookie")
-        }
         cookieService.clear()
     }
 
