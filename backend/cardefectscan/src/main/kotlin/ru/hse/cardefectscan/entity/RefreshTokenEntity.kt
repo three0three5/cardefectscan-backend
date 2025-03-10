@@ -26,9 +26,6 @@ class RefreshTokenEntity(
     @Column(name = "fingerprint", nullable = true)
     val fingerprint: String?,
 
-    @Column(name = "expires_in", nullable = false)
-    val expiresIn: Long,
-
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),
 

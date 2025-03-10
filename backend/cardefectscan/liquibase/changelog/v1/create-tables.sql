@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS refresh_session
     "user_id"       BIGINT REFERENCES _user (id) ON DELETE CASCADE NOT NULL,
     "refresh_token" uuid                                           NOT NULL UNIQUE,
     "fingerprint"   CHARACTER VARYING(200)                         ,
-    "expires_in"    BIGINT                                         NOT NULL,
     "created_at"    TIMESTAMP                                      NOT NULL DEFAULT now()
 );
 
