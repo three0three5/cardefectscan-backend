@@ -8,4 +8,5 @@ data class CookieProperties @ConstructorBinding constructor(
     val maxAge: Int,
     val isHttpOnly: Boolean,
     val isSecure: Boolean,
+    val domain: String,
 )

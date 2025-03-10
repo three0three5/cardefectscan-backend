@@ -54,6 +54,7 @@ auth:
     is-http-only: true
     max-age: 604800
     is-secure: true
+    domain: ${APP_DOMAIN}
 
 minio:
   endpoint: http://minio:9000

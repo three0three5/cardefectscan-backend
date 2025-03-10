@@ -13,15 +13,15 @@ class AuthController(
     private val authService: AuthService,
 ) : AuthApi {
     override fun apiV1AuthSignupPost(signupRequest: SignupRequest): ResponseEntity<TokenResponse> {
-        return ResponseEntity.ok(authService.signUp(signupRequest))
+        return authService.signUp(signupRequest)
     }
 
     override fun apiV1AuthRefreshPost(): ResponseEntity<TokenResponse> {
-        return ResponseEntity.ok(authService.refresh())
+        return authService.refresh()
     }
 
     override fun apiV1AuthLoginPost(loginRequest: LoginRequest): ResponseEntity<TokenResponse> {
-        return ResponseEntity.ok(authService.login(loginRequest))
+        return authService.login(loginRequest)
     }
 
     override fun apiV1AuthLogoutPost(): ResponseEntity<Unit> {

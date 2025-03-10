@@ -37,8 +37,9 @@ class CookieInterceptor(
             val cookie = Cookie("refresh_token", newRefreshToken).apply {
                 isHttpOnly = cookieProperties.isHttpOnly
                 secure = cookieProperties.isSecure
-                path = "/api/v1/auth/"
+                path = "/"
                 maxAge = cookieProperties.maxAge
+                domain = cookieProperties.domain
             }
             response.addCookie(cookie)
             logger.info("Set new refresh token in cookie")
