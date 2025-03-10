@@ -62,7 +62,3 @@ minio:
   secret-key: ${MINIO_ROOT_PASSWORD}
   bucket: images
   expiration: 604800
-
-logging:
-  level:
-    org.springframework.security: TRACE

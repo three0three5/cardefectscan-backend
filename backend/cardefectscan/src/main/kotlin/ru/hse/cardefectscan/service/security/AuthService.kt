@@ -76,7 +76,7 @@ class AuthService(
         .httpOnly(cookieProperties.isHttpOnly)
         .secure(cookieProperties.isSecure)
         .path("/api/v1/auth/")
-        .maxAge(Duration.ofMillis(cookieProperties.maxAge.toLong()))
+        .maxAge(Duration.ofSeconds(cookieProperties.maxAge.toLong()))
         .build()
 
     companion object : KLogging()
