@@ -56,7 +56,8 @@ services:
       MINIO_NOTIFY_AMQP_ENABLE: "on"
       MINIO_NOTIFY_AMQP_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672"
       MINIO_NOTIFY_AMQP_EXCHANGE: "minio-events"
-      MINIO_NOTIFY_AMQP_ROUTING_KEY: "minio.notification"
+      MINIO_NOTIFY_AMQP_EXCHANGE_TYPE: "fanout"
+      MINIO_NOTIFY_AMQP_DURABLE: "on"
     volumes:
       - ./minio_data:/data
     command: server --console-address ":9001" /data
@@ -75,7 +76,7 @@ services:
         sleep 3;
       done;
       mc mb --ignore-existing local/$MINIO_BUCKET_NAME;
-      mc event add local/$MINIO_BUCKET_NAME arn:minio:sqs::rabbitmq:minio-events --event put;
+      mc event add local/$MINIO_BUCKET_NAME arn:minio:sqs::_:amqp --event put;
       echo 'MinIO notifications configured';
       "
 

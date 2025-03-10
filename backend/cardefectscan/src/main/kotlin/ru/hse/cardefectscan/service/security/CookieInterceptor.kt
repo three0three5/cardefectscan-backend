@@ -5,12 +5,10 @@ import jakarta.servlet.http.HttpServletResponse
 import mu.KLogging
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import ru.hse.cardefectscan.properties.CookieProperties
 
 @Component
 class CookieInterceptor(
     private val cookieService: CookieService,
-    private val cookieProperties: CookieProperties,
 ) : HandlerInterceptor {
     override fun preHandle(
         request: HttpServletRequest,
