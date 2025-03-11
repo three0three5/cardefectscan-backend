@@ -8,3 +8,9 @@ auth:
     max-age: 604800
     is-secure: false
     domain: localhost
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: ${MINIO_ROOT_USER}
+  secret-key: ${MINIO_ROOT_PASSWORD}
+  put-link-expiration: 6000

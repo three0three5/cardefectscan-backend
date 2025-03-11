@@ -3,10 +3,15 @@ package ru.hse.cardefectscan.service.image
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioClient
 import io.minio.http.Method
+import mu.KLogging
 import org.openapi.cardefectscan.model.ImageLink
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import ru.hse.cardefectscan.entity.ImageRequestEntity
+import ru.hse.cardefectscan.entity.ImageRequestStatus
 import ru.hse.cardefectscan.properties.MinioProperties
+import ru.hse.cardefectscan.repository.ImageRequestRepository
+import ru.hse.cardefectscan.repository.UserRepository
 import ru.hse.cardefectscan.service.security.AuthDetailsService
 import java.util.UUID
 
@@ -15,20 +20,38 @@ class ImageService(
     private val authDetailsService: AuthDetailsService,
     private val minioClient: MinioClient,
     private val minioProperties: MinioProperties,
+    private val imageRequestRepository: ImageRequestRepository,
+    private val userRepository: UserRepository,
 ) {
     fun generateLoadLink(): ResponseEntity<ImageLink> {
-        val currentUserId = authDetailsService.getCurrentUser()
-        TODO()
+        val currentUserId = authDetailsService.getCurrentUser().userId
+        val user = userRepository.getReferenceById(currentUserId)
+        val imageName = generateFileName(currentUserId, LOADED_FOLDER)
+        logger.info { "image name: $imageName" }
+        val imageRequest = ImageRequestEntity(
+            user = user,
+            imageName = imageName.filename
+        )
         val url = minioClient.getPresignedObjectUrl(
             GetPresignedObjectUrlArgs.builder()
                 .bucket(minioProperties.bucket)
-                .`object`(generateFileName())
-                .method(Method.GET)
-                .expiry(minioProperties.expiration)
+                .`object`(imageName.toString())
+                .method(Method.PUT)
+                .expiry(minioProperties.putLinkExpiration)
                 .build()
         )
+        logger.info { "generated url: $url" }
+        imageRequestRepository.save(imageRequest)
         return ResponseEntity.ok(ImageLink(url))
     }
 
-    fun generateFileName(): String = UUID.randomUUID().toString()
+    fun generateFileName(
+        userId: Long,
+        folderName: String
+    ): ImageName = ImageName(UUID.randomUUID().toString(), userId, folderName)
+
+    companion object : KLogging() {
+        const val LOADED_FOLDER = "loaded"
+        const val PROCESSED_FOLDER = "processed"
+    }
 }

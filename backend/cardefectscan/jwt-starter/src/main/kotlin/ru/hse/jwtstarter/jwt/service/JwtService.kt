@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
-import jakarta.annotation.PostConstruct
 import mu.KLogging
 import org.springframework.stereotype.Service
 import ru.hse.jwtstarter.jwt.model.JwtClaims
@@ -17,10 +16,6 @@ import java.time.Instant
 class JwtService(
     private val jwtProperties: JwtProperties,
 ) {
-    @PostConstruct
-    fun init() {
-        logger.info { "private key: ${jwtProperties.privateKey}" }
-    }
     fun createJwt(userid: Long, roles: List<String?>?): String {
         val algorithm: Algorithm = Algorithm.HMAC512(jwtProperties.privateKey)
         return JWT.create()

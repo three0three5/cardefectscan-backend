@@ -12,7 +12,7 @@ class RabbitMqConfiguration {
 
     @Bean
     fun minioQueue(): Queue {
-        return Queue("minio-queue", true)
+        return Queue("app-queue", true)
     }
 
     @Bean
