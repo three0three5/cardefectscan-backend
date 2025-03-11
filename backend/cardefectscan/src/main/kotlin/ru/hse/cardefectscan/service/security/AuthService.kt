@@ -1,6 +1,5 @@
 package ru.hse.cardefectscan.service.security
 
-import jakarta.transaction.Transactional
 import mu.KLogging
 import org.openapi.cardefectscan.model.LoginRequest
 import org.openapi.cardefectscan.model.SignupRequest
@@ -11,6 +10,7 @@ import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.hse.cardefectscan.entity.UserEntity
 import ru.hse.cardefectscan.exception.LoginOrPasswordIncorrectException
 import ru.hse.cardefectscan.exception.UserExistsException

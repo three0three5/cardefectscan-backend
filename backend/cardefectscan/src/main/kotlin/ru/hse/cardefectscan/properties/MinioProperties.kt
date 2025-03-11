@@ -10,4 +10,5 @@ data class MinioProperties @ConstructorBinding constructor(
     val secretKey: String,
     val bucket: String,
     val putLinkExpiration: Int,
+    val getLinkExpiration: Int,
 )

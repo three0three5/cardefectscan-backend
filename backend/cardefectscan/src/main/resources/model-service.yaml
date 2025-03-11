@@ -1,0 +1,46 @@
+openapi: 3.0.2
+servers:
+  - url: http://localhost:8888
+  - url: http://model
+info:
+  description: ModelService API
+  version: 0.1.0
+  title: ModelService - OpenAPI 3.0
+tags:
+  - name: Images
+    description: Operations with images
+
+paths:
+  /api/v1/process_request:
+    post:
+      tags:
+        - Images
+      summary: Process request
+      description: Process the image loaded to S3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageProcessRequest'
+      responses:
+        "200":
+          description: Success
+        "500":
+          description: Internal Server Error
+
+components:
+  schemas:
+    ImageProcessRequest:
+      type: object
+      required:
+        - download_link
+        - job_id
+        - result_name
+      properties:
+        download_link:
+          type: string
+        job_id:
+          type: string
+        result_name:
+          type: string

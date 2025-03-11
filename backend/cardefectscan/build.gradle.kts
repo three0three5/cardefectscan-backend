@@ -36,7 +36,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation("org.springframework:spring-webflux:7.0.0-M2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
 
@@ -45,7 +44,7 @@ dependencies {
 
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    // https://mvnrepository.com/artifact/org.openapitools/openapi-generator
+
     implementation("org.openapitools:openapi-generator:7.11.0") {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
@@ -54,11 +53,12 @@ dependencies {
     implementation(project(":jwt-starter"))
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-//	testImplementation("org.springframework.amqp:spring-rabbit-test")
+    testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.testcontainers:postgresql:1.20.0")
     testImplementation("com.redis:testcontainers-redis:2.2.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -116,8 +116,29 @@ openApiGenerate {
     )
 }
 
+
+tasks.register("openApiGenerateClient", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
+    generatorName.set("kotlin")
+    inputSpec.set("$rootDir/src/main/resources/model-service.yaml")
+    outputDir.set("${layout.buildDirectory.get()}/generated")
+    apiPackage.set("org.openapi.modelservice.api")
+    modelPackage.set("org.openapi.modelservice.model")
+    generateApiTests.set(false)
+    generateModelTests.set(false)
+    configOptions.set(
+        mapOf(
+            "library" to "jvm-okhttp4",
+            "dateLibrary" to "java8",
+            "serializationLibrary" to "jackson",
+        )
+    )
+}
+
 project.afterEvaluate {
     tasks.named("openApiGenerate").configure {
+        dependsOn("openApiGenerateClient")
+    }
+    tasks.named("openApiGenerateClient").configure {
         dependsOn("cleanGenerated")
     }
     tasks.named("compileKotlin").configure {

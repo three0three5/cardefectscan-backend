@@ -173,3 +173,89 @@ components:
       properties:
         accessToken:
           type: string
+
+    S3Event:
+      type: object
+      properties:
+        EventName:
+          type: string
+        Key:
+          type: string
+        Records:
+          type: array
+          items:
+            type: object
+            properties:
+              eventVersion:
+                type: string
+              eventSource:
+                type: string
+              awsRegion:
+                type: string
+              eventTime:
+                type: string
+              eventName:
+                type: string
+              userIdentity:
+                type: object
+                properties:
+                  principalId:
+                    type: string
+              requestParameters:
+                type: object
+                properties:
+                  key:
+                    type: string
+              responseElements:
+                type: object
+                properties:
+                  key:
+                    type: string
+              s3:
+                type: object
+                properties:
+                  s3SchemaVersion:
+                    type: string
+                  configurationId:
+                    type: string
+                  bucket:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      ownerIdentity:
+                        type: object
+                        properties:
+                          principalId:
+                            type: string
+                      arn:
+                        type: string
+                  object:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                      size:
+                        type: number
+                      eTag:
+                        type: string
+                      contentType:
+                        type: string
+                      userMetadata:
+                        type: object
+                        properties:
+                          key:
+                            type: string
+                      versionId:
+                        type: string
+                      sequencer:
+                        type: string
+              source:
+                type: object
+                properties:
+                  host:
+                    type: string
+                  port:
+                    type: string
+                  userAgent:
+                    type: string

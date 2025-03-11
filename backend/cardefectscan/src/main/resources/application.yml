@@ -61,4 +61,14 @@ minio:
   access-key: ${MINIO_ROOT_USER}
   secret-key: ${MINIO_ROOT_PASSWORD}
   bucket: default
-  put-link-expiration: 30
+  put-link-expiration: 60
+  get-link-expiration: 600
+
+async:
+  model-client:
+    core-pool-size: 5
+    max-pool-size: 10
+    queue-capacity: 50
+
+client:
+  model-service-host: http://model-service

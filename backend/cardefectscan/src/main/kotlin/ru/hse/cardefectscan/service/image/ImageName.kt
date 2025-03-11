@@ -7,19 +7,16 @@ class ImageName(
 ) {
     override fun toString() = "$userId/$folderName/$filename"
 
-    fun fromString(value: String) = value.split("/").let {
-        ImageName(
-            userId = it[0].toLong(),
-            folderName = it[1],
-            filename = it[2]
-        )
-    }
+    companion object {
+        const val LOADED_FOLDER = "loaded"
+        const val PROCESSED_FOLDER = "processed"
 
-    fun fromStringWithBucket(value: String) = value.split("/").let {
-        ImageName(
-            userId = it[1].toLong(),
-            folderName = it[2],
-            filename = it[3]
-        )
+        fun fromStringWithBucket(value: String) = value.split("/").let {
+            ImageName(
+                userId = it[1].toLong(),
+                folderName = it[2],
+                filename = it[3]
+            )
+        }
     }
 }

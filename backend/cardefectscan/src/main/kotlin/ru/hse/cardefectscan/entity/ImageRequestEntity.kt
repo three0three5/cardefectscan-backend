@@ -20,7 +20,7 @@ class ImageRequestEntity (
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val status: ImageRequestStatus = ImageRequestStatus.IMAGE_LOADING,
+    var status: ImageRequestStatus = ImageRequestStatus.IMAGE_LOADING,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),

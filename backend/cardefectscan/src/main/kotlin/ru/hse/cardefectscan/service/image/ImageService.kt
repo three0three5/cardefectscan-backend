@@ -8,10 +8,10 @@ import org.openapi.cardefectscan.model.ImageLink
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import ru.hse.cardefectscan.entity.ImageRequestEntity
-import ru.hse.cardefectscan.entity.ImageRequestStatus
 import ru.hse.cardefectscan.properties.MinioProperties
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import ru.hse.cardefectscan.repository.UserRepository
+import ru.hse.cardefectscan.service.image.ImageName.Companion.LOADED_FOLDER
 import ru.hse.cardefectscan.service.security.AuthDetailsService
 import java.util.UUID
 
@@ -50,8 +50,16 @@ class ImageService(
         folderName: String
     ): ImageName = ImageName(UUID.randomUUID().toString(), userId, folderName)
 
-    companion object : KLogging() {
-        const val LOADED_FOLDER = "loaded"
-        const val PROCESSED_FOLDER = "processed"
+    fun downloadLink(imageName: ImageName): String {
+        return minioClient.getPresignedObjectUrl(
+            GetPresignedObjectUrlArgs.builder()
+                .method(Method.GET)
+                .bucket(minioProperties.bucket)
+                .`object`(imageName.toString())
+                .expiry(minioProperties.getLinkExpiration)
+                .build()
+        )
     }
+
+    companion object : KLogging()
 }
