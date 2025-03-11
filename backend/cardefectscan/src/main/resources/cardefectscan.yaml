@@ -259,3 +259,55 @@ components:
                     type: string
                   userAgent:
                     type: string
+
+    ResultMetadata:
+      type: array
+      items:
+        type: object
+        properties:
+          damage_level:
+            type: string
+            description: "Уровень повреждения сегмента автомобиля"
+            enum:
+              - NONE
+              - SCRATCH
+              - DENT
+              - CRACK
+              - BROKEN
+              - TOTAL_LOSS
+            example: "DENT"
+          segment_name:
+            type: string
+            description: "Название сегмента автомобиля, которое может прийти от модели"
+            x-enum-varnames:
+              - "front_bumper"
+              - "rear_bumper"
+              - "left_door"
+              - "right_door"
+              - "hood"
+              - "trunk"
+              - "roof"
+              - "left_fender"
+              - "right_fender"
+              - "left_headlight"
+              - "right_headlight"
+              - "left_taillight"
+              - "right_taillight"
+              - "grill"
+              - "windshield"
+              - "rear_window"
+              - "side_mirror_left"
+              - "side_mirror_right"
+            example:
+              front_bumper:
+                summary: "Передний бампер"
+                value: "front_bumper"
+              hood:
+                summary: "Капот"
+                value: "hood"
+              left_door:
+                summary: "Левая дверь"
+                value: "left_door"
+        required:
+          - damage_level
+          - segment_name
