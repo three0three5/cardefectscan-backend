@@ -81,8 +81,9 @@ components:
           example: "DENT"
         segment_name:
           type: string
-          description: "Название сегмента автомобиля, которое может прийти от модели"
+          description: "Название сегмента автомобиля, которое может прийти от модели. 0 всегда соответствует empty"
           x-enum-varnames:
+            - "empty"
             - "front_bumper"
             - "rear_bumper"
             - "left_door"
