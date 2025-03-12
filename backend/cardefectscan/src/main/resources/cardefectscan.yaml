@@ -15,6 +15,34 @@ tags:
     description: Operations with processed (or currently being in process) images
 
 paths:
+  /api/v1/images:
+    get:
+      tags:
+        - Images
+      summary: "Download file"
+      description: "Returns the file as a binary stream"
+      parameters:
+        - name: image_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: hash
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "File downloaded successfully"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: "File not found"
+
   /api/v1/images/load:
     get:
       tags:

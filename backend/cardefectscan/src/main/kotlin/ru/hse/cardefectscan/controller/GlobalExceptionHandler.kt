@@ -6,8 +6,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.hse.cardefectscan.exception.BusinessException
+import ru.hse.cardefectscan.exception.ImageNotFoundException
 import ru.hse.cardefectscan.exception.LoginOrPasswordIncorrectException
 import ru.hse.cardefectscan.exception.SessionNotFoundException
+import ru.hse.cardefectscan.exception.UnauthorizedException
 import ru.hse.cardefectscan.exception.UserExistsException
 
 @RestControllerAdvice
@@ -39,7 +41,6 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
 
-
     @ExceptionHandler(UserExistsException::class)
     fun handleSQLException(ex: UserExistsException): ResponseEntity<ProblemDetail> {
         val problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST).apply {
@@ -47,5 +48,23 @@ class GlobalExceptionHandler {
             detail = ex.message ?: "User with this login already exists"
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
+    }
+
+    @ExceptionHandler(UnauthorizedException::class)
+    fun handleUnauthorizedException(ex: UnauthorizedException): ResponseEntity<ProblemDetail> {
+        val problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN).apply {
+            title = HttpStatus.FORBIDDEN.reasonPhrase
+            detail = ex.message ?: "Access Denied"
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail)
+    }
+
+    @ExceptionHandler(ImageNotFoundException::class)
+    fun handleImageNotFoundException(ex: ImageNotFoundException): ResponseEntity<ProblemDetail> {
+        val problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND).apply {
+            title = HttpStatus.NOT_FOUND.reasonPhrase
+            detail = ex.message ?: "Image not found"
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail)
     }
 }

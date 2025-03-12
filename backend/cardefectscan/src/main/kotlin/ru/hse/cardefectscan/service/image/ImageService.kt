@@ -1,13 +1,19 @@
 package ru.hse.cardefectscan.service.image
 
+import io.minio.GetObjectArgs
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioClient
 import io.minio.http.Method
 import mu.KLogging
 import org.openapi.cardefectscan.model.ImageLink
+import org.springframework.core.io.InputStreamResource
+import org.springframework.core.io.Resource
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import ru.hse.cardefectscan.entity.ImageRequestEntity
+import ru.hse.cardefectscan.exception.ImageNotFoundException
 import ru.hse.cardefectscan.properties.MinioProperties
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import ru.hse.cardefectscan.repository.UserRepository
@@ -23,7 +29,7 @@ class ImageService(
     private val imageRequestRepository: ImageRequestRepository,
     private val userRepository: UserRepository,
 ) {
-    fun generateLoadLink(): ResponseEntity<ImageLink> {
+    fun generateUploadLink(): ResponseEntity<ImageLink> {
         val currentUserId = authDetailsService.getCurrentUser().userId
         val user = userRepository.getReferenceById(currentUserId)
         val imageName = generateFileName(currentUserId, LOADED_FOLDER)
@@ -43,6 +49,32 @@ class ImageService(
         logger.info { "generated url: $url" }
         imageRequestRepository.save(imageRequest)
         return ResponseEntity.ok(ImageLink(url))
+    }
+
+    fun getImageByImageName(imageName: String): ResponseEntity<Resource> {
+        return try {
+            logger.info { "imageName: $imageName" }
+            val stream = minioClient.getObject(
+                GetObjectArgs.builder()
+                    .bucket(minioProperties.bucket)
+                    .`object`(imageName)
+                    .build()
+            )
+            val resource = InputStreamResource { stream }
+
+            val headers = HttpHeaders().apply {
+                stream.headers().forEach {
+                    add(it.first, it.second)
+                }
+            }
+
+            ResponseEntity.ok()
+                .headers(headers)
+                .body(resource)
+        } catch (e: Exception) {
+            logger.warn { "Exception occurred: ${e.message}" }
+            throw ImageNotFoundException()
+        }
     }
 
     fun generateFileName(
