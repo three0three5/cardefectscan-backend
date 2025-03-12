@@ -28,7 +28,7 @@ class ModelClientAsync(
                 .findById(imageName.filename).getOrNull()!!
                 .apply { status = ImageRequestStatus.IN_PROGRESS }
             val request = requestForProcess(imageName)
-            modelClient.apiV1ProcessRequestPostRequestConfig(request)
+            modelClient.apiV1ProcessRequestPost(request)
         }
     }
 

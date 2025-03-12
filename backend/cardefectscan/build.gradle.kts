@@ -38,6 +38,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework:spring-webflux:7.0.0-M2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
 
     implementation("io.minio:minio:8.5.17")
     implementation("net.coobird:thumbnailator:0.4.20")

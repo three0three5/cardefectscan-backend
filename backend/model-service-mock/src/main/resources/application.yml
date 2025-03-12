@@ -1,1 +1,19 @@
-spring.application.name=model-service-mock
+minio:
+  endpoint: http://${MINIO_HOST:minio}:9000
+  access-key: ${MINIO_ROOT_USER}
+  secret-key: ${MINIO_ROOT_PASSWORD}
+  bucket: default
+
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: /
+
+  config:
+    import: optional:file:.env[.properties]
+
+server:
+  port: 8888

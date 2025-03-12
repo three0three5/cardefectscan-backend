@@ -21,7 +21,7 @@ class RabbitMqConfiguration {
 
     @Bean
     fun minioExchange(): FanoutExchange {
-        return FanoutExchange("minio-events", true, false)
+        return FanoutExchange(MINIO_EXCHANGE_NAME, true, false)
     }
 
     @Bean
@@ -38,6 +38,7 @@ class RabbitMqConfiguration {
     companion object {
         const val APP_QUEUE = "app-queue"
         const val QUEUE_MESSAGES_DLQ = "app-queue-dlq"
+        const val MINIO_EXCHANGE_NAME = "minio-events"
     }
 
 }

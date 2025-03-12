@@ -14,7 +14,7 @@ import ru.hse.cardefectscan.service.image.ImageName.Companion.LOADED_FOLDER
 import kotlin.jvm.optionals.getOrNull
 
 @Service
-class MinioEventHandler(
+class MinioLoadedEventHandler(
     private val imageRequestRepository: ImageRequestRepository,
     private val modelClientAsync: ModelClientAsync,
 ) : ApplicationListener<MinioEvent> {
@@ -23,7 +23,10 @@ class MinioEventHandler(
         val dto = event.toS3Event()
         val key = dto.key ?: return
         val imageName = ImageName.fromStringWithBucket(key)
-        if (dto.eventName != PUT_EVENT_NAME || imageName.folderName != LOADED_FOLDER) return
+        if (dto.eventName != PUT_EVENT_NAME || imageName.folderName != LOADED_FOLDER) {
+            logger.info { "non put or 'loaded' folder, so ignore" }
+            return
+        }
         val entity = imageRequestRepository.findById(imageName.filename).getOrNull()
         if (entity == null) {
             logger.warn { "Received non existing image request with key $imageName.filename" }

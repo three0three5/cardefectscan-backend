@@ -1,5 +1,5 @@
 auth:
-  refresh-lifespan: 6000
+  refresh-lifespan: 604800
   jwt:
     lifespan: 6000
     private-key: FJBXvKdzYl0ZlIxC6oTO2HTnitxjdxXX9v5gLG4hYRIbSY3YBtVmWYMRHYmYTguB

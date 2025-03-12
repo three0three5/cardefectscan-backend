@@ -47,6 +47,9 @@ components:
 
     EventMessage:
       type: object
+      required:
+        - job_id
+        - is_error
       properties:
         job_id:
           type: string
