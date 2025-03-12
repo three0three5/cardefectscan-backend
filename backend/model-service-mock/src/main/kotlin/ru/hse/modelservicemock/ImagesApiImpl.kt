@@ -112,12 +112,11 @@ class ImagesApiImpl(
             )
         )
         val jsonMetadata = objectMapper.writeValueAsString(metadata)
-        uploadJson(jsonMetadata, imageProcessRequest.resultName + ".json")
-        uploadImage("mask.png", imageProcessRequest.resultName + ".png")
+        uploadImage("mask.png", imageProcessRequest.resultName, jsonMetadata)
         logger.info { "finished successfully" }
     }
 
-    private fun uploadImage(imageName: String, resultName: String) {
+    private fun uploadImage(imageName: String, resultName: String, jsonMetadata: String) {
         logger.info { "uploading image $resultName" }
         val resource = ClassPathResource(imageName)
         val inputStream: InputStream = resource.inputStream
@@ -127,24 +126,11 @@ class ImagesApiImpl(
                 .`object`(resultName)
                 .stream(inputStream, resource.contentLength(), -1)
                 .contentType("image/png")
+                .userMetadata(mapOf("json-data" to jsonMetadata))
                 .build()
         )
 
         inputStream.close()
-    }
-
-    private fun uploadJson(json: String, name: String) {
-        logger.info { "uploading json $json with name $name" }
-        val stream = json.byteInputStream(StandardCharsets.UTF_8)
-        minioClient.putObject(
-            PutObjectArgs.builder()
-                .bucket(minioProperties.bucket)
-                .`object`(name)
-                .stream(stream, json.toByteArray().size.toLong(), -1)
-                .contentType("application/json")
-                .build()
-        )
-        stream.close()
     }
 
     companion object : KLogging()

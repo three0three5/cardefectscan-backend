@@ -25,6 +25,8 @@ class ImageRequestEntity (
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),
 
+    var description: String? = null,
+
     @Id
     val imageName: String,
 )

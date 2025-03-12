@@ -11,15 +11,13 @@ class OpsController(
 ) {
     @PatchMapping("/set_params")
     fun setParams(@RequestBody params: ParamsRequest) {
-        with(params) {
-            delay?.let {
-                opsService.delay = it
-                logger.info { "set delay to $it" }
-            }
-            toFail?.let {
-                opsService.toFail = it
-                logger.info { "set fail to $it" }
-            }
+        params.delay?.let {
+            opsService.delay = it
+            logger.info { "set delay to $it" }
+        }
+        params.toFail?.let {
+            opsService.toFail = it
+            logger.info { "set fail to $it" }
         }
     }
 
