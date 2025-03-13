@@ -1,3 +1,6 @@
+import java.net.URI
+import java.nio.file.Paths
+
 plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "2.1.0"
@@ -5,10 +8,15 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "1.9.25"
     id("org.openapi.generator") version "7.11.0"
+    id("de.undercouch.download") version "5.6.0"
 }
 
 group = "ru.hse"
 version = "0.1.0"
+
+val AGENT_DOWNLOAD_PATH = "${layout.buildDirectory.get()}/libs/opentelemetry-javaagent.jar"
+val JAVAAGENT_VERSION = "2.13.3"
+val OPENTELEMETRY_JAVAAGENT_URL = "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v$JAVAAGENT_VERSION/opentelemetry-javaagent.jar"
 
 java {
     toolchain {
@@ -84,43 +92,52 @@ tasks {
     jar.configure {
         enabled = false
     }
+
+    compileKotlin.configure {
+        dependsOn("openApiGenerateClient")
+        dependsOn("openApiGenerate")
+    }
+
+    bootRun.configure {
+        dependsOn("downloadOpenTelemetryJavaAgent")
+        jvmArgs(listOf(
+            "-javaagent:$AGENT_DOWNLOAD_PATH",
+        ))
+    }
+
+    openApiGenerate {
+        generatorName.set("kotlin-spring")
+        inputSpec.set("$rootDir/src/main/resources/cardefectscan.yaml")
+        outputDir.set("${layout.buildDirectory.get()}/generated")
+        apiPackage.set("org.openapi.cardefectscan.api")
+        modelPackage.set("org.openapi.cardefectscan.model")
+        configOptions.set(
+            mapOf(
+                "useSpringBoot3" to "true",
+                "interfaceOnly" to "true",
+                "documentationProvider" to "none",
+                "useTags" to "true",
+            )
+        )
+    }
 }
 
-task("cleanGenerated") {
+tasks.register("downloadOpenTelemetryJavaAgent") {
+    download {
+        run {
+            src { URI(OPENTELEMETRY_JAVAAGENT_URL).toURL() }
+            dest { Paths.get(AGENT_DOWNLOAD_PATH).toFile() }
+        }
+    }
+}
+
+tasks.register("cleanGenerated") {
     delete("${layout.buildDirectory.get()}/generated")
 }
 
-tasks.register("bootRunLocal") {
-    group = "application"
-    description = "Runs this project as a Spring Boot application with the dev profile"
-    doFirst {
-        tasks.bootRun.configure {
-            systemProperty("spring.profiles.active", "local")
-        }
-    }
-    finalizedBy("bootRun")
-}
-
-
-openApiGenerate {
-    generatorName.set("kotlin-spring")
-    inputSpec.set("$rootDir/src/main/resources/cardefectscan.yaml")
-    outputDir.set("${layout.buildDirectory.get()}/generated")
-    apiPackage.set("org.openapi.cardefectscan.api")
-    modelPackage.set("org.openapi.cardefectscan.model")
-    configOptions.set(
-        mapOf(
-            "useSpringBoot3" to "true",
-            "interfaceOnly" to "true",
-            "documentationProvider" to "none",
-            "useTags" to "true",
-        )
-    )
-}
-
-
 tasks.register("openApiGenerateClient", org.openapitools.generator.gradle.plugin.tasks.GenerateTask::class) {
     generatorName.set("kotlin")
+    dependsOn("cleanGenerated")
     inputSpec.set("$rootDir/src/main/resources/model-service.yaml")
     outputDir.set("${layout.buildDirectory.get()}/generated")
     apiPackage.set("org.openapi.modelservice.api")
@@ -136,14 +153,13 @@ tasks.register("openApiGenerateClient", org.openapitools.generator.gradle.plugin
     )
 }
 
-project.afterEvaluate {
-    tasks.named("openApiGenerate").configure {
-        dependsOn("openApiGenerateClient")
+tasks.register("bootRunLocal") {
+    group = "application"
+    description = "Runs this project as a Spring Boot application with the dev profile"
+    doFirst {
+        tasks.bootRun.configure {
+            systemProperty("spring.profiles.active", "local")
+        }
     }
-    tasks.named("openApiGenerateClient").configure {
-        dependsOn("cleanGenerated")
-    }
-    tasks.named("compileKotlin").configure {
-        dependsOn("openApiGenerate")
-    }
+    finalizedBy("bootRun")
 }
