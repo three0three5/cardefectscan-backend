@@ -8,4 +8,5 @@ import ru.hse.cardefectscan.entity.UserEntity
 
 interface ImageRequestRepository : JpaRepository<ImageRequestEntity, String> {
     fun findAllByUser(user: UserEntity, page: Pageable): Page<ImageRequestEntity>
+    fun findByImageNameAndUser(id: String, user: UserEntity): ImageRequestEntity?
 }

@@ -64,6 +64,9 @@ minio:
   put-link-expiration: 60
   get-link-expiration: 600
 
+app:
+  host: ${APP_HOST}
+
 async:
   model-client:
     core-pool-size: 5

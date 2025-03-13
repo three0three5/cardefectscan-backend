@@ -25,7 +25,7 @@ class ImageService(
     fun generateUploadLink(): ResponseEntity<ImageLink> {
         val currentUserId = authDetailsService.getCurrentUser().userId
         val user = userRepository.getReferenceById(currentUserId)
-        val imageName = generateFileName(currentUserId, LOADED_FOLDER)
+        val imageName = generateFileName(currentUserId)
         logger.info { "image name: $imageName" }
         val imageRequest = ImageRequestEntity(
             user = user,
@@ -37,7 +37,13 @@ class ImageService(
         return ResponseEntity.ok(ImageLink(url))
     }
 
-    fun getImageByImageName(imageName: String, hash: String): ResponseEntity<Resource> {
+    fun getImageByImageName(folder: String, filename: String, hash: String): ResponseEntity<Resource> {
+        val userId = authDetailsService.getCurrentUser().userId
+        val imageName = ImageName(
+            userId = userId,
+            filename = filename,
+            folderName = folder,
+        )
         return linkComposer.withCheck(imageName, hash) {
             try {
                 logger.info { "imageName: $imageName" }
@@ -60,8 +66,7 @@ class ImageService(
 
     private fun generateFileName(
         userId: Long,
-        folderName: String
-    ): ImageName = ImageName(UUID.randomUUID().toString(), userId, folderName)
+    ): ImageName = ImageName(UUID.randomUUID().toString(), userId, LOADED_FOLDER)
 
     companion object : KLogging()
 }

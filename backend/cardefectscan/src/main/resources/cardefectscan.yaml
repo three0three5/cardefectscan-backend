@@ -65,15 +65,20 @@ paths:
               schema:
                 $ref: "#/components/schemas/PageRequestResponse"
 
-  /api/v1/images:
+  /api/v1/images/{folder}/{imageName}:
     get:
       tags:
         - Images
       summary: "Download file"
       description: "Returns the file as a binary stream"
       parameters:
-        - name: image_id
-          in: query
+        - name: folder
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: imageName
+          in: path
           required: true
           schema:
             type: string
@@ -225,6 +230,12 @@ components:
         - FAILED
     ImageRequestDetailed:
       type: object
+      required:
+        - imageId
+        - createdAt
+        - updatedAt
+        - status
+        - originalImageDownloadLink
       properties:
         imageId:
           type: string

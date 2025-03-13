@@ -9,7 +9,6 @@ import ru.hse.cardefectscan.configuration.AsyncConfiguration.Companion.MODEL_CLI
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import ru.hse.cardefectscan.service.TransactionHelper
 import ru.hse.cardefectscan.service.image.ImageName
-import ru.hse.cardefectscan.service.image.ImageService
 import ru.hse.cardefectscan.service.image.LinkComposer
 import kotlin.jvm.optionals.getOrNull
 import org.openapi.modelservice.api.ImagesApi as ModelApi

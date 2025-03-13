@@ -16,7 +16,7 @@ class HashService(
         val mac = Mac.getInstance(ALGORITHM)
         mac.init(keySpec)
         val hashBytes = mac.doFinal(data.toByteArray())
-        return Base64.getEncoder().encodeToString(hashBytes)
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashBytes)
     }
 
     fun verifyHmacSHA256(data: String, expectedHash: String): Boolean {

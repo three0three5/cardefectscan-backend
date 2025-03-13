@@ -15,7 +15,11 @@ class ImagesController(
         return imageService.generateUploadLink()
     }
 
-    override fun apiV1ImagesGet(imageId: String, hash: String): ResponseEntity<Resource> {
-        return imageService.getImageByImageName(imageId, hash)
+    override fun apiV1ImagesFolderImageNameGet(
+        folder: String,
+        imageName: String,
+        hash: String
+    ): ResponseEntity<Resource> {
+        return imageService.getImageByImageName(folder, imageName, hash)
     }
 }
