@@ -20,7 +20,6 @@ import ru.hse.cardefectscan.service.image.ImageName.Companion.PROCESSED_FOLDER
 import ru.hse.cardefectscan.service.image.LinkComposer
 import ru.hse.cardefectscan.service.security.AuthDetailsService
 import java.time.ZoneOffset
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class RequestsService(

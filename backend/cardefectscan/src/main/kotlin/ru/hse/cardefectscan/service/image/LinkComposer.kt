@@ -67,6 +67,5 @@ class LinkComposer(
     companion object : KLogging() {
         const val IMAGE_DOWNLOAD_PATH = "/api/v1/images"
         const val HASH_QUERY_PARAM_NAME = "hash"
-        const val IMAGE_NAME_QUERY_PARAM_NAME = "image_id"
     }
 }
