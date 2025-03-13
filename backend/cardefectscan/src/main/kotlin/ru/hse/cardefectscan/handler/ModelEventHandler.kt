@@ -1,9 +1,9 @@
 package ru.hse.cardefectscan.handler
 
 import mu.KLogging
+import org.openapi.cardefectscan.model.ImageRequestElement
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Service
-import ru.hse.cardefectscan.entity.ImageRequestStatus
 import ru.hse.cardefectscan.handler.event.ModelEvent
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import kotlin.jvm.optionals.getOrNull
@@ -20,7 +20,7 @@ class ModelEventHandler(
             logger.warn { "received non existing request from model with jobId ${dto.jobId}" }
             return
         }
-        entity.status = ImageRequestStatus.FAILED
+        entity.status = ImageRequestElement.Status.FAILED
         entity.description = dto.info
         imageRequestRepository.save(entity)
     }

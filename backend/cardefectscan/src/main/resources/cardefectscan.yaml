@@ -15,6 +15,34 @@ tags:
     description: Operations with processed (or currently being in process) images
 
 paths:
+  /api/v1/requests:
+    get:
+      tags:
+        - Requests
+      summary: Get paginated list of requests
+      parameters:
+        - name: page
+          in: query
+          description: Page number (zero based)
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Number of elements per page
+          required: false
+          schema:
+            type: integer
+            default: 5
+      responses:
+        "200":
+          description: Paginated list of image requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageRequestResponse"
+
   /api/v1/images:
     get:
       tags:
@@ -165,6 +193,53 @@ components:
       name: refresh_token
 
   schemas:
+    ImageRequestElement:
+      type: object
+      required:
+        - imageId
+        - createdAt
+        - status
+      properties:
+        imageId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        thumbnailLink:
+          type: string
+        status:
+          type: string
+          enum:
+            - IMAGE_LOADING
+            - IMAGE_LOADED
+            - IN_PROGRESS
+            - DONE
+            - FAILED
+    PageRequestResponse:
+      type: object
+      required:
+        - content
+        - totalElements
+        - totalPages
+        - currentPage
+        - pageSize
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImageRequestElement"
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        currentPage:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
     ImageLink:
       type: object
       required:

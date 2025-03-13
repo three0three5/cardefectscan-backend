@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.openapi.cardefectscan.model.ImageRequestElement
 import java.time.Instant
 
 @Entity
@@ -20,7 +21,7 @@ class ImageRequestEntity (
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var status: ImageRequestStatus = ImageRequestStatus.IMAGE_LOADING,
+    var status: ImageRequestElement.Status = ImageRequestElement.Status.IMAGE_LOADING,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),
@@ -30,11 +31,3 @@ class ImageRequestEntity (
     @Id
     val imageName: String,
 )
-
-enum class ImageRequestStatus {
-    IMAGE_LOADING,
-    IMAGE_LOADED,
-    IN_PROGRESS,
-    DONE,
-    FAILED,
-}
