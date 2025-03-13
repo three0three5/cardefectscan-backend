@@ -15,7 +15,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "image_request")
-class ImageRequestEntity (
+class ImageRequestEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     val user: UserEntity,

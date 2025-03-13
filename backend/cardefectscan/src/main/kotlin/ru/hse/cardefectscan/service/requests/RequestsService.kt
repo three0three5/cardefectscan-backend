@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import ru.hse.cardefectscan.entity.ImageRequestEntity
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import ru.hse.cardefectscan.repository.UserRepository
+import ru.hse.cardefectscan.service.image.LinkComposer
 import ru.hse.cardefectscan.service.security.AuthDetailsService
 import java.time.ZoneOffset
 
@@ -20,6 +21,7 @@ class RequestsService(
     private val authDetailsService: AuthDetailsService,
     private val imageRequestRepository: ImageRequestRepository,
     private val userRepository: UserRepository,
+    private val linkComposer: LinkComposer,
 ) {
     fun getPaginatedRequests(page: Int, size: Int): ResponseEntity<PageRequestResponse> {
         val userId = authDetailsService.getCurrentUser().userId
@@ -37,6 +39,7 @@ class RequestsService(
                 imageId = it.imageName,
                 status = it.status,
                 createdAt = it.createdAt.atOffset(ZoneOffset.UTC),
+                thumbnailLink = linkComposer.thumbnail(it.imageName),
             )
         }
         return PageRequestResponse(
@@ -49,7 +52,8 @@ class RequestsService(
     }
 
     fun getDetailedInfo(imageId: String): ResponseEntity<ImageRequestDetailed> {
-        TODO("Not yet implemented")
+        val image = imageRequestRepository.findById(imageId)
+        TODO()
     }
 
     companion object : KLogging()

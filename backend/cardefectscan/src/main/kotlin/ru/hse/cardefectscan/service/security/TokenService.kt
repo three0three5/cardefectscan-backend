@@ -12,7 +12,6 @@ import ru.hse.jwtstarter.jwt.model.Role
 import ru.hse.jwtstarter.jwt.service.JwtService
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
