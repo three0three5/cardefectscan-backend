@@ -9,7 +9,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import org.openapi.cardefectscan.model.ImageRequestElement
+import org.hibernate.annotations.UpdateTimestamp
+import org.openapi.cardefectscan.model.ImageRequestStatus
 import java.time.Instant
 
 @Entity
@@ -21,10 +22,14 @@ class ImageRequestEntity (
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var status: ImageRequestElement.Status = ImageRequestElement.Status.IMAGE_LOADING,
+    var status: ImageRequestStatus = ImageRequestStatus.IMAGE_LOADING,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    var updatedAt: Instant = Instant.now(),
 
     var description: String? = null,
 

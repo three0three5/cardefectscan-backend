@@ -1,7 +1,7 @@
 package ru.hse.cardefectscan.handler
 
 import mu.KLogging
-import org.openapi.cardefectscan.model.ImageRequestElement
+import org.openapi.cardefectscan.model.ImageRequestStatus
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,11 +28,11 @@ class MinioLoadedEventHandler(
             return
         }
         val entity = imageRequestRepository.findById(imageName.filename).getOrNull()
-        if (entity == null || entity.status != ImageRequestElement.Status.IMAGE_LOADING) {
+        if (entity == null || entity.status != ImageRequestStatus.IMAGE_LOADING) {
             logger.warn { "Received suspicious image request with key $imageName" }
             return
         }
-        entity.status = ImageRequestElement.Status.IMAGE_LOADED
+        entity.status = ImageRequestStatus.IMAGE_LOADED
         imageRequestRepository.save(entity)
         modelClientAsync.sendRequestToModel(imageName)
     }

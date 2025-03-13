@@ -15,6 +15,28 @@ tags:
     description: Operations with processed (or currently being in process) images
 
 paths:
+  /api/v1/requests/{imageId}:
+    get:
+      tags:
+        - Requests
+      summary: Get detailed info of the request
+      parameters:
+        - name: imageId
+          in: path
+          description: identifier of the request
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detailed request info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageRequestDetailed"
+        "404":
+          description: Image not found
+
   /api/v1/requests:
     get:
       tags:
@@ -193,6 +215,32 @@ components:
       name: refresh_token
 
   schemas:
+    ImageRequestStatus:
+      type: string
+      enum:
+        - IMAGE_LOADING
+        - IMAGE_LOADED
+        - IN_PROGRESS
+        - DONE
+        - FAILED
+    ImageRequestDetailed:
+      type: object
+      properties:
+        imageId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        status:
+          $ref: "#/components/schemas/ImageRequestStatus"
+        originalImageDownloadLink:
+          type: string
+        resultImageDownloadLink:
+          type: string
+
     ImageRequestElement:
       type: object
       required:
@@ -208,13 +256,7 @@ components:
         thumbnailLink:
           type: string
         status:
-          type: string
-          enum:
-            - IMAGE_LOADING
-            - IMAGE_LOADED
-            - IN_PROGRESS
-            - DONE
-            - FAILED
+          $ref: "#/components/schemas/ImageRequestStatus"
     PageRequestResponse:
       type: object
       required:

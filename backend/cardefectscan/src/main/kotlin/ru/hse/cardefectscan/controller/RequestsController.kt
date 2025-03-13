@@ -1,6 +1,7 @@
 package ru.hse.cardefectscan.controller
 
 import org.openapi.cardefectscan.api.RequestsApi
+import org.openapi.cardefectscan.model.ImageRequestDetailed
 import org.openapi.cardefectscan.model.PageRequestResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
@@ -12,5 +13,9 @@ class RequestsController(
 ) : RequestsApi {
     override fun apiV1RequestsGet(page: Int, size: Int): ResponseEntity<PageRequestResponse> {
         return requestsService.getPaginatedRequests(page, size)
+    }
+
+    override fun apiV1RequestsImageIdGet(imageId: String): ResponseEntity<ImageRequestDetailed> {
+        return requestsService.getDetailedInfo(imageId)
     }
 }

@@ -1,6 +1,7 @@
 package ru.hse.cardefectscan.service.requests
 
 import mu.KLogging
+import org.openapi.cardefectscan.model.ImageRequestDetailed
 import org.openapi.cardefectscan.model.ImageRequestElement
 import org.openapi.cardefectscan.model.PageRequestResponse
 import org.springframework.data.domain.Page
@@ -45,6 +46,10 @@ class RequestsService(
             currentPage = page.number,
             pageSize = page.size,
         )
+    }
+
+    fun getDetailedInfo(imageId: String): ResponseEntity<ImageRequestDetailed> {
+        TODO("Not yet implemented")
     }
 
     companion object : KLogging()
