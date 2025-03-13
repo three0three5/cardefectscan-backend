@@ -94,3 +94,15 @@ services:
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
+
+  mockserver:
+    image: orobtsovv/model-service-mock:latest
+    container_name: mockserver
+    hostname: mockserver
+    ports:
+      - "8888:8080"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}

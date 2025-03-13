@@ -1,10 +1,6 @@
 package ru.hse.modelservicemock
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.get
-import io.ktor.client.statement.readBytes
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import kotlinx.coroutines.CoroutineScope
@@ -23,8 +19,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.time.Duration
 
@@ -41,36 +35,9 @@ class ImagesApiImpl(
     override fun apiV1ProcessRequestPost(imageProcessRequest: ImageProcessRequest): ResponseEntity<Unit> {
         logger.info { "received request for processing image: $imageProcessRequest" }
         backgroundScope.launch {
-            logger.info { "trying to download image" }
-            downloadImage(imageProcessRequest.downloadLink, "testloading/" + imageProcessRequest.resultName + ".png")
             handle(imageProcessRequest)
         }
         return ResponseEntity.ok().build()
-    }
-
-    private suspend fun downloadImage(downloadLink: String, s: String) {
-        val client = HttpClient(CIO)
-
-        try {
-            val byteArray = client.get(downloadLink).readBytes()
-
-            val file = File(s)
-
-            if (!file.parentFile.exists()) {
-                val dirsCreated = file.parentFile.mkdirs()
-                if (!dirsCreated) {
-                    logger.error { "Could not create dirs for image" }
-                }
-            }
-
-            logger.info { "trying to write bytes to path $s" }
-            file.writeBytes(byteArray)
-            logger.info { "image loaded to $s" }
-        } catch (e: IOException) {
-            logger.error(e) { "Exception while image loading" }
-        } finally {
-            client.close()
-        }
     }
 
     private suspend fun handle(imageProcessRequest: ImageProcessRequest) {
