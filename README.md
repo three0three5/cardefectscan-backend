@@ -15,6 +15,7 @@ docker compose up -d -f prod.compose.yml
 
 ```bash
 cd backend/cardefectscan
+./gradlew clean build
 ./gradlew downloadOpenTelemetryJavaAgent
 docker build -t orobtsovv/cardefectscan:latest .
 ```
@@ -85,4 +86,6 @@ APP_DOMAIN=localhost
 GF_USER=
 GF_PASSWORD=
 JWT_PRIVATE_KEY=
+IS_COOKIE_HTTP_ONLY=
+IS_COOKIE_SECURE=
 ```
