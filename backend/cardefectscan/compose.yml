@@ -34,7 +34,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: cardefectscan
     volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - ./volumes/db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -60,7 +60,7 @@ services:
       MINIO_NOTIFY_AMQP_DURABLE: "on"
       MINIO_NOTIFY_AMQP_ROUTING_KEY: "minio"
     volumes:
-      - ./minio_data:/data
+      - ./volumes/minio_data:/data
     command: server --console-address ":9001" /data
     restart: unless-stopped
 
@@ -96,7 +96,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-rabbitmq}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-rabbitmq}
     volumes:
-      - ./rabbitmq_data:/var/lib/rabbitmq
+      - ./volumes/rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
 
   mockserver:
