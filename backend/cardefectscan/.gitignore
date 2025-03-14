@@ -41,10 +41,7 @@ out/
 .kotlin
 
 ### Docker volumes ###
-/db_data
-/redis_data
-/minio_data
-/rabbitmq_data
+/volumes
 
 ### Submodules ###
 /jwt-starter/build

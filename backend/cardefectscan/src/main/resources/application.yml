@@ -51,9 +51,9 @@ auth:
     lifespan: ${JWT_LIFESPAN:120}
     private-key: ${JWT_PRIVATE_KEY}
   cookies:
-    is-http-only: true
+    is-http-only: ${IS_COOKIE_HTTP_ONLY:true}
     max-age: 604800
-    is-secure: true
+    is-secure: ${IS_COOKIE_SECURE:true}
     domain: ${APP_DOMAIN}
 
 minio:
@@ -74,4 +74,4 @@ async:
     queue-capacity: 50
 
 client:
-  model-service-host: http://model-service
+  model-service-host: ${MODEL_SERVICE_HOST:http://model-service}

@@ -14,7 +14,7 @@ plugins {
 group = "ru.hse"
 version = "0.1.0"
 
-val AGENT_DOWNLOAD_PATH = "${layout.buildDirectory.get()}/libs/opentelemetry-javaagent.jar"
+val AGENT_DOWNLOAD_PATH = "${layout.buildDirectory.get()}/libs/javaagent/opentelemetry-javaagent.jar"
 val JAVAAGENT_VERSION = "2.13.3"
 val OPENTELEMETRY_JAVAAGENT_URL = "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v$JAVAAGENT_VERSION/opentelemetry-javaagent.jar"
 
@@ -98,13 +98,6 @@ tasks {
         dependsOn("openApiGenerate")
     }
 
-    bootRun.configure {
-        dependsOn("downloadOpenTelemetryJavaAgent")
-        jvmArgs(listOf(
-            "-javaagent:$AGENT_DOWNLOAD_PATH",
-        ))
-    }
-
     openApiGenerate {
         generatorName.set("kotlin-spring")
         inputSpec.set("$rootDir/src/main/resources/cardefectscan.yaml")
@@ -123,10 +116,13 @@ tasks {
 }
 
 tasks.register("downloadOpenTelemetryJavaAgent") {
-    download {
-        run {
-            src { URI(OPENTELEMETRY_JAVAAGENT_URL).toURL() }
-            dest { Paths.get(AGENT_DOWNLOAD_PATH).toFile() }
+    val file = Paths.get(AGENT_DOWNLOAD_PATH).toFile()
+    if (!file.exists()) {
+        download {
+            run {
+                src { URI(OPENTELEMETRY_JAVAAGENT_URL).toURL() }
+                dest { Paths.get(AGENT_DOWNLOAD_PATH).toFile() }
+            }
         }
     }
 }
