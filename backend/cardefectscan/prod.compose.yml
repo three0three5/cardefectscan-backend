@@ -49,9 +49,11 @@ services:
     container_name: minio
     ports:
       - "9001:9001"  # Web UI
+      - "9000:9000"
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_SERVER_URL: http://${APP_DOMAIN}:9000
       MINIO_NOTIFY_AMQP_ENABLE: "on"
       MINIO_NOTIFY_AMQP_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672"
       MINIO_NOTIFY_AMQP_EXCHANGE: "minio-events"
