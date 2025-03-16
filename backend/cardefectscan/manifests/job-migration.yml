@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: liquibase-update
+spec:
+  template:
+    spec:
+      containers:
+        - name: liquibase
+          image: liquibase/liquibase
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_HOST
+                  name: config-env
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_NAME
+                  name: config-env
+            - name: LIQUIBASE_COMMAND_URL
+              value: "jdbc:postgresql://$(DB_HOST)/$(DB_NAME)"
+            - name: LIQUIBASE_COMMAND_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_USER
+            - name: LIQUIBASE_COMMAND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_PASSWORD
+            - name: LIQUIBASE_COMMAND_CHANGELOG_FILE
+              valueFrom:
+                configMapKeyRef:
+                  key: LIQUIBASE_COMMAND_CHANGELOG_FILE
+                  name: config-env
+          volumeMounts:
+            - name: liquibase-volume
+              mountPath: /liquibase/changelog
+          command: ["liquibase", "update"]
+      restartPolicy: Never
+      volumes:
+        - name: liquibase-volume
+          persistentVolumeClaim:
+            claimName: liquibase-pvc
+  backoffLimit: 4

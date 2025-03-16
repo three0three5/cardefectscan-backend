@@ -104,6 +104,7 @@ services:
     container_name: model-service
     hostname: model-service
     environment:
+      JAVA_OPTS: "-javaagent:/usr/src/app/javaagent.jar -Dotel.metric.export.interval=15s -Dotel.instrumentation.http.server.active-requests.enabled=true -Dotel.exporter.otlp.endpoint=http://otel-collector:4317 -Dotel.exporter.otlp.protocol=grpc -Dotel.service.name=modelservice"
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       RABBITMQ_USER: ${RABBITMQ_USER}

@@ -1,10 +1,18 @@
+import java.net.URI
+import java.nio.file.Paths
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.openapi.generator") version "7.11.0"
+    id("de.undercouch.download") version "5.6.0"
 }
+
+val AGENT_DOWNLOAD_PATH = "${layout.buildDirectory.get()}/libs/javaagent/opentelemetry-javaagent.jar"
+val JAVAAGENT_VERSION = "2.13.3"
+val OPENTELEMETRY_JAVAAGENT_URL = "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v$JAVAAGENT_VERSION/opentelemetry-javaagent.jar"
 
 group = "ru.hse"
 version = "0.0.1-SNAPSHOT"
@@ -46,6 +54,12 @@ task("cleanGenerated") {
     delete("${layout.buildDirectory.get()}/generated")
 }
 
+tasks {
+    jar.configure {
+        enabled = false
+    }
+}
+
 sourceSets {
     main {
         kotlin {
@@ -82,6 +96,18 @@ project.afterEvaluate {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
+tasks.register("downloadOpenTelemetryJavaAgent") {
+    val file = Paths.get(AGENT_DOWNLOAD_PATH).toFile()
+    if (!file.exists()) {
+        download {
+            run {
+                src { URI(OPENTELEMETRY_JAVAAGENT_URL).toURL() }
+                dest { Paths.get(AGENT_DOWNLOAD_PATH).toFile() }
+            }
+        }
     }
 }
 
