@@ -57,7 +57,7 @@ auth:
     domain: ${APP_DOMAIN}
 
 minio:
-  endpoint: http://minio:9000
+  endpoint: http://${APP_DOMAIN}:9000
   access-key: ${MINIO_ROOT_USER}
   secret-key: ${MINIO_ROOT_PASSWORD}
   bucket: default

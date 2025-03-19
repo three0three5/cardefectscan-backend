@@ -1,3 +1,33 @@
+spring:
+  application:
+    name: cardefectscan
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        order_by.default_null_ordering: last
+        format_sql: true
+        default_schema: public
+    open-in-view: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cardefectscan
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  mustache:
+    check-template-location: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: /
+
+
 auth:
   refresh-lifespan: 604800
   jwt:
@@ -10,7 +40,7 @@ auth:
     domain: localhost
 
 minio:
-  endpoint: http://localhost:9000
+  endpoint: http://${APP_DOMAIN}:9000
   access-key: ${MINIO_ROOT_USER}
   secret-key: ${MINIO_ROOT_PASSWORD}
   put-link-expiration: 6000

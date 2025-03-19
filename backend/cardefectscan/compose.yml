@@ -53,6 +53,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-miniominiominio}
+      MINIO_SERVER_URL: http://${APP_DOMAIN:-localhost}:9000
       MINIO_NOTIFY_AMQP_ENABLE: "on"
       MINIO_NOTIFY_AMQP_URL: amqp://${RABBITMQ_USER:-rabbitmq}:${RABBITMQ_PASSWORD:-rabbitmq}@rabbitmq:5672
       MINIO_NOTIFY_AMQP_EXCHANGE: "minio-events"

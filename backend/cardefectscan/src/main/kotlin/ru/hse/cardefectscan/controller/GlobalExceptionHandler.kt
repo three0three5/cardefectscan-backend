@@ -18,7 +18,7 @@ class GlobalExceptionHandler {
     fun handleLoginOrPasswordIncorrect(ex: LoginOrPasswordIncorrectException): ResponseEntity<ProblemDetail> {
         val problemDetail = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED).apply {
             title = HttpStatus.UNAUTHORIZED.reasonPhrase
-            detail = ex.message ?: "Login or password is incorrect"
+            detail = ex.message ?: "Неправильный логин или пароль"
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail)
     }
@@ -45,7 +45,7 @@ class GlobalExceptionHandler {
     fun handleSQLException(ex: UserExistsException): ResponseEntity<ProblemDetail> {
         val problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST).apply {
             title = HttpStatus.BAD_REQUEST.reasonPhrase
-            detail = ex.message ?: "User with this login already exists"
+            detail = ex.message ?: "Пользователь с таким логином уже существует"
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail)
     }
@@ -63,7 +63,7 @@ class GlobalExceptionHandler {
     fun handleImageNotFoundException(ex: ImageNotFoundException): ResponseEntity<ProblemDetail> {
         val problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND).apply {
             title = HttpStatus.NOT_FOUND.reasonPhrase
-            detail = ex.message ?: "Image not found"
+            detail = ex.message ?: "Изображение не найдено"
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail)
     }
