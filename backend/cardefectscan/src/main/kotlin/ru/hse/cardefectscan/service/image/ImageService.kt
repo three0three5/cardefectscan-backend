@@ -57,9 +57,8 @@ class ImageService(
                 val stream = linkComposer.getObjectStream(imageName)
                 val resource = InputStreamResource { stream }
                 val headers = HttpHeaders().apply {
-                    stream.headers().forEach {
-                        add(it.first, it.second)
-                    }
+                    stream.headers().forEach { add(it.first, it.second) }
+                    add(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000, immutable")
                 }
                 ResponseEntity.ok()
                     .headers(headers)
@@ -70,6 +69,7 @@ class ImageService(
             }
         }
     }
+
 
     private fun generateFileName(
         userId: Long,
