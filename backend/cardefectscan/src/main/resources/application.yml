@@ -57,7 +57,7 @@ auth:
     domain: ${APP_DOMAIN}
 
 minio:
-  endpoint: http://${APP_DOMAIN}:9000
+  endpoint: http://minio:9000
   access-key: ${MINIO_ROOT_USER}
   secret-key: ${MINIO_ROOT_PASSWORD}
   bucket: default
@@ -74,4 +74,4 @@ async:
     queue-capacity: 50
 
 client:
-  model-service-host: ${MODEL_SERVICE_HOST:http://model-service}
+  model-service-host: ${MODEL_SERVICE_HOST:http://model-service:8080}

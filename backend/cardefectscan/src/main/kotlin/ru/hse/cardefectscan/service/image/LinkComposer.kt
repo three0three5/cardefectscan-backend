@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import ru.hse.cardefectscan.exception.UnauthorizedException
 import ru.hse.cardefectscan.properties.AppProperties
 import ru.hse.cardefectscan.properties.MinioProperties
+import java.net.URI
 
 @Service
 class LinkComposer(
@@ -20,6 +21,7 @@ class LinkComposer(
     private val appProperties: AppProperties,
 ) {
     fun <T> withCheck(imageName: ImageName, hash: String, block: () -> T): T {
+        logger.info { "checking imageName: $imageName" }
         if (!hashService.verifyHmacSHA256(imageName.toString(), hash)) throw UnauthorizedException()
         return block.invoke()
     }
@@ -28,8 +30,10 @@ class LinkComposer(
         return null // TODO
     }
 
-    fun linkForPut(imageName: ImageName): String =
-        minioClient.getPresignedObjectUrl(
+    fun linkForPut(imageName: ImageName): String {
+        logger.info { "Generating put link" }
+        val host = URI.create(appProperties.host)
+        val originalUrl = minioClient.getPresignedObjectUrl(
             GetPresignedObjectUrlArgs.builder()
                 .bucket(minioProperties.bucket)
                 .`object`(imageName.toString())
@@ -37,6 +41,22 @@ class LinkComposer(
                 .expiry(minioProperties.putLinkExpiration)
                 .build()
         )
+
+        logger.info { "original url: $originalUrl" }
+
+        val originalUri = URI.create(originalUrl)
+
+        val encodedQuery = originalUri.rawQuery ?: ""
+
+        return UriComponentsBuilder.newInstance()
+            .scheme(host.scheme)
+            .host(host.host)
+            .port(host.port)
+            .path("$MINIO_PATH_PREFIX${originalUri.rawPath}")
+            .query(encodedQuery)
+            .build()
+            .toUriString()
+    }
 
     fun getObjectStream(imageName: ImageName): GetObjectResponse =
         minioClient.getObject(
@@ -65,7 +85,8 @@ class LinkComposer(
             .toUriString()
 
     companion object : KLogging() {
-        const val IMAGE_DOWNLOAD_PATH = "/api/v1/images"
+        const val IMAGE_DOWNLOAD_PATH = "/cardefectscan/api/v1/images"
         const val HASH_QUERY_PARAM_NAME = "hash"
+        const val MINIO_PATH_PREFIX = "/minio"
     }
 }

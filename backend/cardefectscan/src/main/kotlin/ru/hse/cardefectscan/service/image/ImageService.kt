@@ -31,14 +31,21 @@ class ImageService(
             user = user,
             imageName = imageName.filename
         )
-        val url = linkComposer.linkForPut(imageName)
+        val url = runCatching {
+            linkComposer.linkForPut(imageName)
+        }.onFailure {
+            logger.error { it }
+            it.printStackTrace()
+            throw it
+        }
         logger.info { "generated url: $url" }
         imageRequestRepository.save(imageRequest)
-        return ResponseEntity.ok(ImageLink(url))
+        return ResponseEntity.ok(ImageLink(url.getOrNull()!!))
     }
 
     fun getImageByImageName(folder: String, filename: String, hash: String): ResponseEntity<Resource> {
         val userId = authDetailsService.getCurrentUser().userId
+        logger.info { "getting image in folder $folder with name $filename and hash $hash for user $userId" }
         val imageName = ImageName(
             userId = userId,
             filename = filename,

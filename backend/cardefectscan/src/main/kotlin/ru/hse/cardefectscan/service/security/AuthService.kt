@@ -75,7 +75,7 @@ class AuthService(
     private fun getCookie(refresh: String) = ResponseCookie.from("refresh_token", refresh)
         .httpOnly(cookieProperties.isHttpOnly)
         .secure(cookieProperties.isSecure)
-        .path("/api/v1/auth/")
+        .path("/cardefectscan/api/v1/auth/")
         .maxAge(Duration.ofSeconds(cookieProperties.maxAge.toLong()))
         .build()
 
