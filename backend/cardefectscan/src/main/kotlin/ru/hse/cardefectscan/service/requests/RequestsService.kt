@@ -32,7 +32,11 @@ class RequestsService(
         val userId = authDetailsService.getCurrentUser().userId
         val user = userRepository.getReferenceById(userId)
         val pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending())
-        val result = imageRequestRepository.findAllByUser(user, pageRequest)
+        val result = imageRequestRepository.findAllByUserAndStatusIn(
+            user,
+            listOf(ImageRequestStatus.IN_PROGRESS, ImageRequestStatus.DONE, ImageRequestStatus.FAILED),
+            pageRequest,
+        )
         return ResponseEntity.ok(
             createResponse(result)
         )
@@ -60,7 +64,10 @@ class RequestsService(
         val userId = authDetailsService.getCurrentUser().userId
         val user = userRepository.getReferenceById(userId)
         val image = imageRequestRepository.findByImageNameAndUser(imageId, user) ?: throw ImageNotFoundException()
-        if (image.status == ImageRequestStatus.IMAGE_LOADING) throw ImageNotFoundException()
+        if (image.status in listOf(
+                ImageRequestStatus.IMAGE_LOADING,
+                ImageRequestStatus.IMAGE_LOADED,
+        )) throw ImageNotFoundException()
         val imageNameOriginal = ImageName(
             image.imageName,
             userId,
@@ -71,6 +78,8 @@ class RequestsService(
             userId,
             folderName = PROCESSED_FOLDER,
         )
+        val resultLink = if (image.status == ImageRequestStatus.DONE)
+            linkComposer.proxiedLink(imageNameResult) else null
         return ResponseEntity.ok(
             ImageRequestDetailed(
                 imageId = image.imageName,
@@ -78,7 +87,7 @@ class RequestsService(
                 updatedAt = image.updatedAt.atOffset(ZoneOffset.UTC),
                 status = image.status,
                 originalImageDownloadLink = linkComposer.proxiedLink(imageNameOriginal),
-                resultImageDownloadLink = linkComposer.proxiedLink(imageNameResult),
+                resultImageDownloadLink = resultLink,
             )
         )
     }

@@ -40,7 +40,7 @@ auth:
     domain: localhost
 
 minio:
-  endpoint: http://${APP_DOMAIN}:9000
+  endpoint: http://localhost:9000
   access-key: ${MINIO_ROOT_USER}
   secret-key: ${MINIO_ROOT_PASSWORD}
   put-link-expiration: 6000
