@@ -1,6 +1,7 @@
 package ru.hse.modelservicemock
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.minio.GetObjectArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import kotlinx.coroutines.CoroutineScope
@@ -19,8 +20,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
+import java.awt.Color
+import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Duration
+import javax.imageio.ImageIO
 
 val backgroundScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -56,7 +62,7 @@ class ImagesApiImpl(
         val body = EventMessage(
             jobId = imageProcessRequest.jobId,
             isError = true,
-            info = "something went wrong",
+            info = "Не удалось найти автомобиль на изображении",
         )
         val message = MessageBuilder
             .withBody(objectMapper.writeValueAsString(body).toByteArray())
@@ -78,25 +84,67 @@ class ImagesApiImpl(
             )
         )
         val jsonMetadata = objectMapper.writeValueAsString(metadata)
-        uploadImage("mask.png", imageProcessRequest.resultName, jsonMetadata)
+        uploadImage(imageProcessRequest.downloadObjectName, imageProcessRequest.resultName, jsonMetadata)
         logger.info { "finished successfully" }
     }
 
     private fun uploadImage(imageName: String, resultName: String, jsonMetadata: String) {
+        logger.info { "downloading image $imageName" }
+        val imageBytes = minioClient.getObject(
+            GetObjectArgs.builder()
+                .bucket(minioProperties.bucket)
+                .`object`(imageName)
+                .build()
+        ).use { inputStream ->
+            ByteArrayOutputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+                outputStream.toByteArray()
+            }
+        }
+        val bufferedImage = ImageIO.read(imageBytes.inputStream())
+        val imageToSave = processImage(bufferedImage)
         logger.info { "uploading image $resultName" }
-        val resource = ClassPathResource(imageName)
-        val inputStream: InputStream = resource.inputStream
+
+        val imageToSaveBytes = ByteArrayOutputStream().use { outputStream ->
+            ImageIO.write(imageToSave, "png", outputStream)
+            outputStream.toByteArray()
+        }
+
+        val inputStream: InputStream = ByteArrayInputStream(imageToSaveBytes)
+
         minioClient.putObject(
             PutObjectArgs.builder()
                 .bucket(minioProperties.bucket)
                 .`object`(resultName)
-                .stream(inputStream, resource.contentLength(), -1)
+                .stream(inputStream, imageToSaveBytes.size.toLong(), -1)
                 .contentType("image/png")
                 .userMetadata(mapOf("json-data" to jsonMetadata))
                 .build()
         )
+    }
 
-        inputStream.close()
+    private fun processImage(bufferedImage: BufferedImage): BufferedImage {
+        val width = bufferedImage.width
+        val height = bufferedImage.height
+
+        val processedImage = BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
+
+        val midX = width / 2
+        val midY = height / 2
+
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val value = when {
+                    x < midX && y < midY -> 0
+                    x >= midX && y < midY -> 1
+                    x < midX && y >= midY -> 2
+                    else -> 3
+                }
+                processedImage.raster.setSample(x, y, 0, value)
+            }
+        }
+
+        return processedImage
     }
 
     companion object : KLogging()

@@ -35,7 +35,7 @@ class ModelClientAsync(
     private fun requestForProcess(imageName: ImageName) = ImageProcessRequest(
         jobId = imageName.filename,
         resultName = ImageName(imageName.filename, imageName.userId, ImageName.PROCESSED_FOLDER).toString(),
-        downloadLink = linkComposer.downloadLink(imageName),
+        downloadObjectName = imageName.toString(),
     )
 
     companion object : KLogging()

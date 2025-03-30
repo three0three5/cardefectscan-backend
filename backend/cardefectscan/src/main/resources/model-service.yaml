@@ -34,15 +34,18 @@ components:
     ImageProcessRequest:
       type: object
       required:
-        - download_link
+        - download_object_name
         - job_id
         - result_name
       properties:
-        download_link:
+        download_object_name:
+          description: Name of the object to download.
           type: string
         job_id:
+          description: Unique job id to identify request.
           type: string
         result_name:
+          description: Name of the result object to be saved.
           type: string
 
     EventMessage:

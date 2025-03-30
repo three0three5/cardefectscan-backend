@@ -66,16 +66,6 @@ class LinkComposer(
                 .build()
         )
 
-    fun downloadLink(imageName: ImageName): String =
-        minioClient.getPresignedObjectUrl(
-            GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket(minioProperties.bucket)
-                .`object`(imageName.toString())
-                .expiry(minioProperties.getLinkExpiration)
-                .build()
-        )
-
     fun proxiedLink(imageName: ImageName): String =
         UriComponentsBuilder.fromUriString(appProperties.host)
             .path(IMAGE_DOWNLOAD_PATH)
