@@ -130,6 +130,7 @@ services:
       MODEL_SERVICE_HOST: http://model-service:8080
       IS_COOKIE_SECURE: false
       IS_COOKIE_HTTP_ONLY: false
+      JWT_LIFESPAN: ${JWT_LIFESPAN}
 
   otel-collector:
     image: "otel/opentelemetry-collector:latest"

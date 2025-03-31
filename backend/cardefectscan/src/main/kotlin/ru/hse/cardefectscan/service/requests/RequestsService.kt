@@ -38,17 +38,17 @@ class RequestsService(
             pageRequest,
         )
         return ResponseEntity.ok(
-            createResponse(result)
+            createResponse(result, userId)
         )
     }
 
-    private fun createResponse(page: Page<ImageRequestEntity>): PageRequestResponse {
+    private fun createResponse(page: Page<ImageRequestEntity>, userId: Long): PageRequestResponse {
         val content = page.content.map {
             ImageRequestElement(
                 imageId = it.imageName,
                 status = it.status,
                 createdAt = it.createdAt.atOffset(ZoneOffset.UTC),
-                thumbnailLink = linkComposer.thumbnail(it.imageName),
+                thumbnailLink = linkComposer.thumbnail(it.imageName, userId),
             )
         }
         return PageRequestResponse(

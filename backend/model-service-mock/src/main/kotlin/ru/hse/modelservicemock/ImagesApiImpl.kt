@@ -17,10 +17,8 @@ import org.openapi.modelservice.model.ResultList
 import org.openapi.modelservice.model.ResultMetadata
 import org.springframework.amqp.core.MessageBuilder
 import org.springframework.amqp.rabbit.core.RabbitTemplate
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
-import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream

@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import ru.hse.cardefectscan.exception.UnauthorizedException
 import ru.hse.cardefectscan.properties.AppProperties
 import ru.hse.cardefectscan.properties.MinioProperties
+import ru.hse.cardefectscan.service.image.ImageName.Companion.LOADED_FOLDER
 import java.net.URI
 
 @Service
@@ -22,12 +23,18 @@ class LinkComposer(
 ) {
     fun <T> withCheck(imageName: ImageName, hash: String, block: () -> T): T {
         logger.info { "checking imageName: $imageName" }
-        if (!hashService.verifyHmacSHA256(imageName.toString(), hash)) throw UnauthorizedException()
+        if (!hashService.verifyHmacSHA256(imageName.toString(), hash)) throw UnauthorizedException("Hash check failed")
         return block.invoke()
     }
 
-    fun thumbnail(imageName: String): String? {
-        return null // TODO
+    fun thumbnail(imageName: String, userId: Long): String? {
+        return proxiedLink(
+            ImageName(
+                filename = imageName,
+                folderName = LOADED_FOLDER,
+                userId = userId,
+            )
+        )
     }
 
     fun linkForPut(imageName: ImageName): String {
