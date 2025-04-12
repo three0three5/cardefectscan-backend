@@ -9,7 +9,6 @@ import ru.hse.cardefectscan.configuration.AsyncConfiguration.Companion.MODEL_CLI
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import ru.hse.cardefectscan.service.TransactionHelper
 import ru.hse.cardefectscan.service.image.ImageName
-import ru.hse.cardefectscan.service.image.LinkComposer
 import kotlin.jvm.optionals.getOrNull
 import org.openapi.modelservice.api.ImagesApi as ModelApi
 
@@ -18,7 +17,6 @@ class ModelClientAsync(
     private val modelClient: ModelApi,
     private val transactionHelper: TransactionHelper,
     private val imageRequestRepository: ImageRequestRepository,
-    private val linkComposer: LinkComposer,
 ) {
     @Async(MODEL_CLIENT_EXECUTOR)
     fun sendRequestToModel(imageName: ImageName) {
@@ -28,7 +26,7 @@ class ModelClientAsync(
                 .findById(imageName.filename).getOrNull()!!
                 .apply { status = ImageRequestStatus.IN_PROGRESS }
             val request = requestForProcess(imageName)
-            modelClient.apiV1ProcessRequestPost(request)
+            modelClient.apiV1ProcessRequestPost(request) // todo outbox of IMAGE_LOADED, when fail then FAILED
         }
     }
 

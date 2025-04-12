@@ -34,7 +34,7 @@ class MinioLoadedEventHandler(
         }
         entity.status = ImageRequestStatus.IMAGE_LOADED
         imageRequestRepository.save(entity)
-        modelClientAsync.sendRequestToModel(imageName)
+        modelClientAsync.sendRequestToModel(imageName) // todo remove when outbox implemented
     }
 
     companion object : KLogging()
