@@ -72,14 +72,12 @@ class ImagesApiImpl(
 
     private suspend fun saveResult(imageProcessRequest: ImageProcessRequest) {
         val metadata = ResultList(
-            listOf(
                 mapOf(
                     "0" to ResultMetadata(ResultMetadata.DamageLevel.NONE, "empty"),
                     "1" to ResultMetadata(ResultMetadata.DamageLevel.SCRATCH, "left_headlight"),
                     "2" to ResultMetadata(ResultMetadata.DamageLevel.CRACK, "right_headlight"),
                     "3" to ResultMetadata(ResultMetadata.DamageLevel.DENT, "front_bumper"),
                 )
-            )
         )
         val jsonMetadata = objectMapper.writeValueAsString(metadata)
         uploadImage(imageProcessRequest.downloadObjectName, imageProcessRequest.resultName, jsonMetadata)
