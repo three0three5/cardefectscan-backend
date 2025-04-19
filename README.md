@@ -5,8 +5,9 @@
 1.
 
 ```bash
-cd backend/cardefectscan
-docker compose up -d -f prod.compose.yml
+cd cardefectscan
+docker compose -f prod.compose.yml up -d
+cd ..
 ```
 
 В случае необходимости, можно собрать образ локально:
@@ -14,10 +15,11 @@ docker compose up -d -f prod.compose.yml
 1.
 
 ```bash
-cd backend/cardefectscan
+cd cardefectscan
 ./gradlew clean build
 ./gradlew downloadOpenTelemetryJavaAgent
 docker build -t orobtsovv/cardefectscan:latest .
+cd ..
 ```
 
 Для локального запуска серверной части при разработке:
@@ -25,7 +27,7 @@ docker build -t orobtsovv/cardefectscan:latest .
 1. 
 
 ```bash
-cd backend/cardefectscan
+cd cardefectscan
 ./gradlew clean build
 ```
 
@@ -45,7 +47,6 @@ docker compose up -d
 
 ```bash
 cd ..
-cd ..
 ```
 
 В случае необходимости, можно создать образ mockserver локально:
@@ -53,16 +54,15 @@ cd ..
 1.
 
 ```bash
-cd backend/model-service-mock
+cd model-service-mock
 ./gradlew clean build
-cd ..
 cd ..
 ```
 
 2.
 
 ```bash
-docker build -t orobtsovv/model-service-mock:latest ./backend/model-service-mock
+docker build -t orobtsovv/model-service-mock:latest ./model-service-mock
 ```
 
 SwaggerUI доступен по ссылке: http://localhost:8081/
