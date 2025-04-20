@@ -89,6 +89,7 @@ class RequestsService(
                 status = image.status,
                 originalImageDownloadLink = linkComposer.proxiedLink(imageNameOriginal),
                 resultImageDownloadLink = resultLink,
+                description = image.description,
             )
         )
     }
