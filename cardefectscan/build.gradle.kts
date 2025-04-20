@@ -16,7 +16,8 @@ version = "0.1.0"
 
 val AGENT_DOWNLOAD_PATH = "${layout.buildDirectory.get()}/libs/javaagent/opentelemetry-javaagent.jar"
 val JAVAAGENT_VERSION = "2.13.3"
-val OPENTELEMETRY_JAVAAGENT_URL = "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v$JAVAAGENT_VERSION/opentelemetry-javaagent.jar"
+val OPENTELEMETRY_JAVAAGENT_URL =
+    "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v$JAVAAGENT_VERSION/opentelemetry-javaagent.jar"
 
 java {
     toolchain {

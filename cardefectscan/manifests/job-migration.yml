@@ -39,7 +39,7 @@ spec:
           volumeMounts:
             - name: liquibase-volume
               mountPath: /liquibase/changelog
-          command: ["liquibase", "update"]
+          command: [ "liquibase", "update" ]
       restartPolicy: Never
       volumes:
         - name: liquibase-volume

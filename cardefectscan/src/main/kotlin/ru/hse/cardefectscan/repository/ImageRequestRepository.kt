@@ -11,6 +11,8 @@ interface ImageRequestRepository : JpaRepository<ImageRequestEntity, String> {
     fun findAllByUserAndStatusIn(
         user: UserEntity,
         statuses: List<ImageRequestStatus>,
-        page: Pageable): Page<ImageRequestEntity>
+        page: Pageable
+    ): Page<ImageRequestEntity>
+
     fun findByImageNameAndUser(id: String, user: UserEntity): ImageRequestEntity?
 }

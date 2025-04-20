@@ -14,11 +14,11 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers: [otlp]
-      exporters: [debug]
+      receivers: [ otlp ]
+      exporters: [ debug ]
     logs:
-      receivers: [otlp]
-      exporters: [debug, otlphttp]
+      receivers: [ otlp ]
+      exporters: [ debug, otlphttp ]
     metrics:
       receivers: [ otlp ]
       exporters: [ prometheus ]

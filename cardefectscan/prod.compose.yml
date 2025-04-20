@@ -101,6 +101,8 @@ services:
 
   model-service:
     image: orobtsovv/model-service-mock:latest
+    ports:
+      - "8888:8080"
     container_name: model-service
     hostname: model-service
     environment:

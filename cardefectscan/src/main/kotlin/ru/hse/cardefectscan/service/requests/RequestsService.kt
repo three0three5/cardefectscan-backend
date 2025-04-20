@@ -67,7 +67,8 @@ class RequestsService(
         if (image.status in listOf(
                 ImageRequestStatus.IMAGE_LOADING,
                 ImageRequestStatus.IMAGE_LOADED,
-        )) throw ImageNotFoundException()
+            )
+        ) throw ImageNotFoundException()
         val imageNameOriginal = ImageName(
             image.imageName,
             userId,
