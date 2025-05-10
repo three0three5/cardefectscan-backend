@@ -4,6 +4,7 @@ import mu.KLogging
 import org.openapi.cardefectscan.model.ImageRequestStatus
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.hse.cardefectscan.handler.event.ModelEvent
 import ru.hse.cardefectscan.repository.ImageRequestRepository
 import kotlin.jvm.optionals.getOrNull
@@ -12,6 +13,7 @@ import kotlin.jvm.optionals.getOrNull
 class ModelEventHandler(
     private val imageRequestRepository: ImageRequestRepository,
 ) : ApplicationListener<ModelEvent> {
+    @Transactional
     override fun onApplicationEvent(event: ModelEvent) {
         val dto = event.toEventMessage()
         if (!dto.isError) return

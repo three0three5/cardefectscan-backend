@@ -4,6 +4,7 @@ import mu.KLogging
 import org.openapi.cardefectscan.model.ImageRequestStatus
 import org.springframework.context.ApplicationListener
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.hse.cardefectscan.handler.event.MinioEvent
 import ru.hse.cardefectscan.handler.event.MinioEvent.Companion.PUT_EVENT_NAME
 import ru.hse.cardefectscan.repository.ImageRequestRepository
@@ -15,6 +16,7 @@ import kotlin.jvm.optionals.getOrNull
 class MinioProcessedEventHandler(
     private val imageRequestRepository: ImageRequestRepository,
 ) : ApplicationListener<MinioEvent> {
+    @Transactional
     override fun onApplicationEvent(event: MinioEvent) {
         val dto = event.toS3Event()
         val key = dto.key ?: return
