@@ -13,8 +13,6 @@ import mu.KLogging
 import org.openapi.modelservice.api.ImagesApi
 import org.openapi.modelservice.model.EventMessage
 import org.openapi.modelservice.model.ImageProcessRequest
-import org.openapi.modelservice.model.ResultList
-import org.openapi.modelservice.model.ResultMetadata
 import org.springframework.amqp.core.MessageBuilder
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.ResponseEntity
@@ -71,20 +69,11 @@ class ImagesApiImpl(
     }
 
     private suspend fun saveResult(imageProcessRequest: ImageProcessRequest) {
-        val metadata = ResultList(
-                mapOf(
-                    "0" to ResultMetadata(ResultMetadata.DamageLevel.NONE, "empty"),
-                    "1" to ResultMetadata(ResultMetadata.DamageLevel.SCRATCH, "left_headlight"),
-                    "2" to ResultMetadata(ResultMetadata.DamageLevel.CRACK, "right_headlight"),
-                    "3" to ResultMetadata(ResultMetadata.DamageLevel.DENT, "front_bumper"),
-                )
-        )
-        val jsonMetadata = objectMapper.writeValueAsString(metadata)
-        uploadImage(imageProcessRequest.downloadObjectName, imageProcessRequest.resultName, jsonMetadata)
+        uploadImage(imageProcessRequest.downloadObjectName, imageProcessRequest.resultName)
         logger.info { "finished successfully" }
     }
 
-    private fun uploadImage(imageName: String, resultName: String, jsonMetadata: String) {
+    private fun uploadImage(imageName: String, resultName: String) {
         logger.info { "downloading image $imageName" }
         val imageBytes = minioClient.getObject(
             GetObjectArgs.builder()
@@ -114,7 +103,6 @@ class ImagesApiImpl(
                 .`object`(resultName)
                 .stream(inputStream, imageToSaveBytes.size.toLong(), -1)
                 .contentType("image/png")
-                .userMetadata(mapOf("json-data" to jsonMetadata))
                 .build()
         )
     }
@@ -123,7 +111,7 @@ class ImagesApiImpl(
         val width = bufferedImage.width
         val height = bufferedImage.height
 
-        val processedImage = BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
+        val processedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
         val midX = width / 2
         val midY = height / 2
@@ -136,7 +124,7 @@ class ImagesApiImpl(
                     x < midX && y >= midY -> 2
                     else -> 3
                 }
-                processedImage.raster.setSample(x, y, 0, value)
+                processedImage.raster.setPixel(x, y, intArrayOf(value, value, 0))
             }
         }
 
