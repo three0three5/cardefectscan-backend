@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.Duration
 import javax.imageio.ImageIO
+import kotlin.math.max
 
 val backgroundScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -124,7 +125,7 @@ class ImagesApiImpl(
                     x < midX && y >= midY -> 2
                     else -> 3
                 }
-                processedImage.raster.setPixel(x, y, intArrayOf(value, value, 0))
+                processedImage.raster.setPixel(x, y, intArrayOf(value, max(0, value - 1), 0))
             }
         }
 
