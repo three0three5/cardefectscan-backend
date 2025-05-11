@@ -6,6 +6,10 @@
 
 ```bash
 cd cardefectscan
+mkdir volumes
+mkdir volumes/loki-data
+mkdir volumes/prometheus-data
+mkdir volumes/grafana-data
 docker compose -f prod.compose.yml up -d
 cd ..
 ```
