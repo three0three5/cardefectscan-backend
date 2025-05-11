@@ -56,13 +56,9 @@ cd ..
 ```bash
 cd model-service-mock
 ./gradlew clean build
+./gradlew downloadOpenTelemetryJavaAgent
+docker build -t orobtsovv/model-service-mock:latest .
 cd ..
-```
-
-2.
-
-```bash
-docker build -t orobtsovv/model-service-mock:latest ./model-service-mock
 ```
 
 SwaggerUI доступен по ссылке: http://localhost:8081/
