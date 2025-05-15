@@ -10,6 +10,9 @@ mkdir volumes
 mkdir volumes/loki-data
 mkdir volumes/prometheus-data
 mkdir volumes/grafana-data
+sudo chown -R 472:472 ./volumes/grafana-data
+sudo chown -R 65534:65534 ./volumes/prometheus-data
+sudo chown -R 10001:10001 ./volumes/loki-data
 docker compose -f prod.compose.yml up -d
 cd ..
 ```
